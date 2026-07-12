@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Processo em Curso — Procedimento Comum Ordinário</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   TOKENS
+   ========================================================= */
+:root{
+  --ink:#101a2e;
+  --ink-2:#16233d;
+  --ink-3:#1d2c4a;
+  --paper:#f3efe2;
+  --paper-2:#ece5d1;
+  --brass:#c9a227;
+  --brass-2:#e7c766;
+  --crimson:#b23a48;
+  --crimson-2:#e2a3ab;
+  --green:#3e7c59;
+  --green-2:#a9d2b8;
+  --text-on-ink:#f3efe2;
+  --text-muted-on-ink:#9aa6c0;
+  --text-on-paper:#1b2333;
+  --text-muted-on-paper:#5c5847;
+  --radius:14px;
+  --shadow:0 12px 30px rgba(0,0,0,.35);
+  --font-display:'Fraunces', serif;
+  --font-body:'IBM Plex Sans', sans-serif;
+  --font-mono:'IBM Plex Mono', monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(ellipse at top left, #182747 0%, transparent 55%),
+    radial-gradient(ellipse at bottom right, #0d1424 0%, transparent 55%),
+    var(--ink);
+  color:var(--text-on-ink);
+  font-family:var(--font-body);
+  min-height:100vh;
+  padding:24px 16px 60px;
+}
+.app{max-width:920px;margin:0 auto;}
+h1,h2,h3{font-family:var(--font-display);margin:0;}
+button{font-family:var(--font-body);cursor:pointer;}
+::selection{background:var(--brass);color:var(--ink);}
+
+/* =========================================================
+   TOPBAR — case file header
+   ========================================================= */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 4px 22px;border-bottom:1px solid rgba(201,162,39,.25);
+  margin-bottom:22px;
+}
+.brand{display:flex;align-items:center;gap:12px;}
+.brand .seal-mini{
+  width:38px;height:38px;border-radius:50%;
+  border:2px solid var(--brass);display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:700;color:var(--brass);font-size:15px;
+}
+.brand .name{font-family:var(--font-display);font-size:19px;font-weight:600;letter-spacing:.2px;}
+.brand .name small{display:block;font-family:var(--font-mono);font-size:11px;font-weight:400;color:var(--text-muted-on-ink);letter-spacing:.5px;text-transform:uppercase;margin-top:2px;}
+.top-actions{display:flex;gap:8px;}
+.icon-btn{
+  background:transparent;border:1px solid rgba(201,162,39,.4);color:var(--brass-2);
+  width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:16px;transition:.15s;
+}
+.icon-btn:hover{background:rgba(201,162,39,.12);border-color:var(--brass);}
+.icon-btn.active{background:var(--brass);color:var(--ink);}
+
+/* =========================================================
+   SCREENS
+   ========================================================= */
+.screen{display:none;animation:fadein .35s ease;}
+.screen.active{display:block;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* HOME */
+.hero{text-align:center;padding:10px 8px 34px;}
+.hero .eyebrow{
+  font-family:var(--font-mono);font-size:12px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--brass-2);margin-bottom:14px;
+}
+.hero h1{font-size:clamp(28px,5vw,42px);line-height:1.15;font-weight:600;color:var(--text-on-ink);}
+.hero h1 em{color:var(--brass-2);font-style:normal;}
+.hero p{max-width:560px;margin:16px auto 0;color:var(--text-muted-on-ink);font-size:15.5px;line-height:1.6;}
+
+.modes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:8px;}
+.mode-card{
+  background:var(--paper);color:var(--text-on-paper);border-radius:var(--radius);
+  padding:20px 20px 18px;text-align:left;border:none;box-shadow:var(--shadow);
+  position:relative;overflow:hidden;transition:transform .18s ease, box-shadow .18s ease;
+}
+.mode-card::before{
+  content:'';position:absolute;top:0;left:0;height:5px;width:100%;background:var(--brass);
+}
+.mode-card:hover{transform:translateY(-4px);box-shadow:0 18px 36px rgba(0,0,0,.45);}
+.mode-card .tag{
+  font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--text-muted-on-paper);display:block;margin-bottom:8px;
+}
+.mode-card h3{font-size:19px;font-weight:600;margin-bottom:6px;}
+.mode-card p{font-size:13px;color:var(--text-muted-on-paper);line-height:1.5;margin:0;}
+.mode-card .qty{
+  position:absolute;bottom:16px;right:18px;font-family:var(--font-mono);font-size:11px;
+  color:var(--brass);border:1px solid var(--brass);padding:2px 8px;border-radius:20px;
+}
+
+.home-footer{display:flex;justify-content:center;gap:12px;margin-top:34px;flex-wrap:wrap;}
+.ghost-btn{
+  background:transparent;border:1px solid rgba(243,239,226,.3);color:var(--text-on-ink);
+  padding:10px 18px;border-radius:30px;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:8px;
+  transition:.15s;
+}
+.ghost-btn:hover{border-color:var(--brass);color:var(--brass-2);}
+
+/* GAME HEADER */
+.game-header{
+  background:var(--ink-2);border:1px solid rgba(201,162,39,.25);border-radius:var(--radius);
+  padding:14px 18px;margin-bottom:18px;
+}
+.game-header-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+.folder-tab{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--brass-2);
+}
+.hstats{display:flex;gap:16px;flex-wrap:wrap;}
+.hstat{text-align:right;}
+.hstat .v{font-family:var(--font-mono);font-size:17px;font-weight:600;color:var(--text-on-ink);}
+.hstat .l{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted-on-ink);}
+.deadline-track{
+  margin-top:12px;height:6px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden;
+}
+.deadline-fill{height:100%;background:linear-gradient(90deg,var(--brass),var(--brass-2));width:0%;transition:width .25s linear;}
+.deadline-fill.urgent{background:linear-gradient(90deg,var(--crimson),#ff7a86);}
+.lives{display:flex;gap:6px;font-size:16px;}
+.life.lost{opacity:.2;filter:grayscale(1);}
+
+/* QUESTION CARD */
+.card{
+  background:var(--paper);color:var(--text-on-paper);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:26px 26px 22px;position:relative;overflow:hidden;
+}
+.card .topic-chip{
+  display:inline-block;font-family:var(--font-mono);font-size:10.5px;letter-spacing:1px;text-transform:uppercase;
+  background:var(--ink);color:var(--brass-2);padding:4px 10px;border-radius:20px;margin-bottom:14px;
+}
+.card .difficulty{
+  display:inline-block;font-family:var(--font-mono);font-size:10.5px;letter-spacing:1px;text-transform:uppercase;
+  padding:4px 10px;border-radius:20px;margin-bottom:14px;margin-left:6px;border:1px solid currentColor;
+}
+.diff-facil{color:var(--green);}
+.diff-intermediaria{color:#8a6d0d;}
+.diff-dificil{color:var(--crimson);}
+
+.scenario-box{
+  background:var(--paper-2);border-left:3px solid var(--brass);padding:12px 14px;border-radius:0 8px 8px 0;
+  font-size:14.5px;line-height:1.6;margin-bottom:16px;font-style:italic;color:#3a3626;
+}
+.question-text{font-family:var(--font-display);font-size:20px;font-weight:600;line-height:1.4;margin-bottom:20px;}
+
+.options{display:flex;flex-direction:column;gap:10px;}
+.opt{
+  text-align:left;background:#fff;border:1.5px solid #d9d2ba;border-radius:10px;
+  padding:13px 16px;font-size:14.5px;line-height:1.5;color:var(--text-on-paper);
+  display:flex;gap:12px;align-items:flex-start;transition:.15s;
+}
+.opt .letter{
+  font-family:var(--font-mono);font-weight:600;color:var(--text-muted-on-paper);flex-shrink:0;
+  width:22px;height:22px;border-radius:50%;border:1.5px solid #d9d2ba;display:flex;align-items:center;justify-content:center;font-size:12px;
+}
+.opt:hover:not(.locked){border-color:var(--brass);background:#fffdf6;}
+.opt.selected{border-color:var(--brass);background:#fdf6df;}
+.opt.correct{border-color:var(--green);background:#e9f4ee;}
+.opt.correct .letter{background:var(--green);color:#fff;border-color:var(--green);}
+.opt.wrong{border-color:var(--crimson);background:#fbecee;}
+.opt.wrong .letter{background:var(--crimson);color:#fff;border-color:var(--crimson);}
+.opt.locked{cursor:default;}
+
+.tf-options{display:flex;gap:12px;margin-top:4px;}
+.tf-btn{
+  flex:1;padding:16px;border-radius:10px;border:1.5px solid #d9d2ba;background:#fff;
+  font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--text-on-paper);
+}
+.tf-btn:hover:not(.locked){border-color:var(--brass);}
+.tf-btn.correct{border-color:var(--green);background:#e9f4ee;color:var(--green);}
+.tf-btn.wrong{border-color:var(--crimson);background:#fbecee;color:var(--crimson);}
+
+/* FEEDBACK PANEL */
+.feedback{
+  margin-top:20px;border-top:1px dashed #cfc7ab;padding-top:18px;display:none;
+}
+.feedback.show{display:block;animation:fadein .3s ease;}
+.feedback-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.stamp{
+  font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;
+  border:3px solid var(--green);color:var(--green);padding:5px 12px;border-radius:6px;
+  transform:rotate(-4deg);display:inline-block;animation:stampIn .35s cubic-bezier(.2,1.6,.4,1);
+}
+.stamp.wrong{border-color:var(--crimson);color:var(--crimson);transform:rotate(3deg);}
+@keyframes stampIn{from{transform:scale(2.2) rotate(-4deg);opacity:0;}to{transform:scale(1) rotate(-4deg);opacity:1;}}
+.feedback-body{font-size:14px;line-height:1.65;color:var(--text-on-paper);}
+.feedback-body p{margin:0 0 10px;}
+.feedback-body .label{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted-on-paper);display:block;margin-bottom:3px;}
+.article-pill{
+  display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:12px;
+  background:var(--ink);color:var(--brass-2);padding:4px 10px;border-radius:6px;margin-bottom:10px;
+}
+.stf-box{background:#eef1f8;border-left:3px solid #3c5a8a;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:10px;font-size:13.5px;}
+.tip-box{background:#fdf6df;border-left:3px solid var(--brass);padding:10px 12px;border-radius:0 8px 8px 0;font-size:13.5px;}
+
+.next-row{display:flex;justify-content:flex-end;margin-top:20px;}
+.primary-btn{
+  background:var(--ink);color:var(--brass-2);border:none;padding:13px 26px;border-radius:30px;
+  font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px;transition:.15s;
+}
+.primary-btn:hover{background:#0a1120;transform:translateY(-1px);}
+.secondary-btn{
+  background:transparent;color:var(--text-on-ink);border:1px solid rgba(243,239,226,.35);
+  padding:12px 24px;border-radius:30px;font-weight:500;font-size:14px;
+}
+.secondary-btn:hover{border-color:var(--brass);color:var(--brass-2);}
+
+/* ORDERING SCREEN */
+.order-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
+.order-item{
+  background:#fff;border:1.5px solid #d9d2ba;border-radius:10px;padding:11px 14px;
+  display:flex;align-items:center;gap:12px;font-size:14px;
+}
+.order-item .pos{
+  font-family:var(--font-mono);font-weight:700;color:var(--brass);width:24px;flex-shrink:0;
+}
+.order-item .txt{flex:1;}
+.order-item .arrows{display:flex;gap:4px;}
+.order-item button{
+  background:var(--paper-2);border:1px solid #d9d2ba;width:28px;height:28px;border-radius:6px;font-size:13px;
+}
+.order-item button:hover{background:var(--brass-2);}
+.order-item.correct-pos{border-color:var(--green);background:#eef7f1;}
+.order-item.wrong-pos{border-color:var(--crimson);background:#fbecee;}
+
+/* RESULTS */
+.results-hero{text-align:center;padding:10px 0 24px;}
+.results-hero .big-score{font-family:var(--font-display);font-size:56px;font-weight:700;color:var(--brass-2);}
+.results-hero .of{font-family:var(--font-mono);color:var(--text-muted-on-ink);font-size:14px;}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:22px 0;}
+.rstat{background:var(--ink-2);border:1px solid rgba(201,162,39,.2);border-radius:12px;padding:14px;text-align:center;}
+.rstat .v{font-family:var(--font-mono);font-size:22px;font-weight:600;color:var(--text-on-ink);}
+.rstat .l{font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted-on-ink);margin-top:4px;}
+.achv-row{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0;}
+.achv{
+  background:linear-gradient(135deg,var(--brass),#a5811c);color:#1b1400;font-size:12px;font-weight:600;
+  padding:7px 13px;border-radius:20px;display:flex;align-items:center;gap:6px;
+}
+.canvas-wrap{background:var(--paper);border-radius:var(--radius);padding:18px;margin:18px 0;box-shadow:var(--shadow);}
+.canvas-wrap h3{color:var(--text-on-paper);font-size:15px;margin-bottom:10px;}
+.rec-box{background:var(--ink-2);border:1px solid rgba(201,162,39,.25);border-radius:12px;padding:16px 18px;margin:14px 0;}
+.rec-box h4{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--brass-2);margin-bottom:8px;}
+.rec-box ul{margin:0;padding-left:18px;font-size:13.5px;line-height:1.7;color:var(--text-muted-on-ink);}
+.save-row{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+.save-row input{
+  flex:1;min-width:160px;background:var(--ink-2);border:1px solid rgba(201,162,39,.3);color:var(--text-on-ink);
+  padding:12px 14px;border-radius:30px;font-size:14px;
+}
+.result-actions{display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap;}
+
+/* RANKING */
+.rank-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
+.rank-item{
+  background:var(--ink-2);border:1px solid rgba(201,162,39,.2);border-radius:10px;
+  padding:12px 16px;display:flex;align-items:center;gap:14px;
+}
+.rank-item .pos{font-family:var(--font-mono);font-weight:700;color:var(--brass);width:26px;}
+.rank-item .who{flex:1;}
+.rank-item .who .n{font-weight:600;font-size:14.5px;}
+.rank-item .who .m{font-size:11px;color:var(--text-muted-on-ink);font-family:var(--font-mono);}
+.rank-item .sc{font-family:var(--font-mono);font-weight:600;color:var(--brass-2);}
+
+/* Progress mini */
+.progress-mini{display:flex;gap:4px;margin-top:10px;flex-wrap:wrap;}
+.progress-mini span{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.12);}
+.progress-mini span.hit{background:var(--green);}
+.progress-mini span.miss{background:var(--crimson);}
+.progress-mini span.cur{background:var(--brass);}
+
+.empty-note{text-align:center;color:var(--text-muted-on-ink);font-size:14px;padding:30px;}
+
+@media (max-width:560px){
+  .card{padding:20px 18px 18px;}
+  .results-hero .big-score{font-size:44px;}
+  .hstats{gap:10px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="seal-mini">PP</div>
+      <div class="name">Processo em Curso
+        <small>Procedimento Comum Ordinário — Revisão</small>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="soundToggle" title="Som">🔊</button>
+      <button class="icon-btn" id="homeBtn" title="Início">⌂</button>
+    </div>
+  </div>
+
+  <!-- ===================== HOME ===================== -->
+  <div class="screen active" id="screen-home">
+    <div class="hero">
+      <span class="eyebrow">Processo Penal II · Revisão para prova</span>
+      <h1>Do inquérito à <em>sentença</em>:<br>domine o rito ordinário.</h1>
+      <p>Sete modos de jogo para revisar denúncia, resposta à acusação, absolvição sumária, audiência de instrução, prisão preventiva e muito mais — com fundamentação legal e jurisprudência em cada resposta.</p>
+    </div>
+
+    <div class="modes-grid" id="modesGrid"></div>
+
+    <div class="home-footer">
+      <button class="ghost-btn" id="rankingBtn">🏆 Ranking local</button>
+      <button class="ghost-btn" id="statsBtn">📊 Meu desempenho</button>
+    </div>
+  </div>
+
+  <!-- ===================== GAME ===================== -->
+  <div class="screen" id="screen-game">
+    <div class="game-header">
+      <div class="game-header-top">
+        <span class="folder-tab" id="modeLabel">Autos nº 000/2026</span>
+        <div class="hstats">
+          <div class="hstat"><div class="v" id="hScore">0</div><div class="l">Pontos</div></div>
+          <div class="hstat"><div class="v" id="hStreak">0</div><div class="l">Sequência</div></div>
+          <div class="hstat" id="hLivesWrap" style="display:none;"><div class="v lives" id="hLives">❤❤❤</div><div class="l">Vidas</div></div>
+          <div class="hstat" id="hTimerWrap" style="display:none;"><div class="v" id="hTimer">30</div><div class="l">Segundos</div></div>
+          <div class="hstat" id="hProgWrap"><div class="v" id="hProg">1/10</div><div class="l">Questão</div></div>
+        </div>
+      </div>
+      <div class="deadline-track"><div class="deadline-fill" id="deadlineFill"></div></div>
+      <div class="progress-mini" id="progressMini"></div>
+    </div>
+
+    <div class="card" id="questionCard">
+      <span class="topic-chip" id="topicChip">Tema</span>
+      <span class="difficulty" id="diffChip">Fácil</span>
+      <div class="scenario-box" id="scenarioBox" style="display:none;"></div>
+      <div class="question-text" id="questionText">Carregando questão…</div>
+      <div class="options" id="optionsWrap"></div>
+      <div class="tf-options" id="tfWrap" style="display:none;">
+        <button class="tf-btn" data-v="true">✔ Verdadeiro</button>
+        <button class="tf-btn" data-v="false">✖ Falso</button>
+      </div>
+
+      <div class="feedback" id="feedbackPanel">
+        <div class="feedback-head">
+          <span class="stamp" id="stampEl">Correto</span>
+        </div>
+        <div class="feedback-body">
+          <span class="article-pill" id="articlePill" style="display:none;"></span>
+          <p><span class="label">Fundamentação</span><span id="explainText"></span></p>
+          <div class="stf-box" id="stfBox" style="display:none;"></div>
+          <div class="tip-box" id="tipBox" style="display:none;"></div>
+        </div>
+      </div>
+
+      <div class="next-row">
+        <button class="primary-btn" id="nextBtn" style="display:none;">Próximo auto →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ORDERING GAME ===================== -->
+  <div class="screen" id="screen-order">
+    <div class="game-header">
+      <div class="game-header-top">
+        <span class="folder-tab">Ordene os atos processuais</span>
+        <div class="hstats">
+          <div class="hstat"><div class="v" id="oProg">1/8</div><div class="l">Exercício</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="question-text" id="orderTitle">Reorganize a sequência correta</div>
+      <p style="font-size:13.5px;color:var(--text-muted-on-paper);margin:-10px 0 16px;">Use as setas para reordenar os itens até refletir a ordem cronológica/processual correta.</p>
+      <ul class="order-list" id="orderList"></ul>
+      <div class="feedback" id="orderFeedback">
+        <div class="feedback-head"><span class="stamp" id="orderStamp">Correto</span></div>
+        <div class="feedback-body"><p id="orderExplain"></p></div>
+      </div>
+      <div class="next-row">
+        <button class="primary-btn" id="orderCheckBtn">Conferir ordem</button>
+        <button class="primary-btn" id="orderNextBtn" style="display:none;">Próximo exercício →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== RESULTS ===================== -->
+  <div class="screen" id="screen-results">
+    <div class="results-hero">
+      <div class="folder-tab" style="text-align:center;display:block;margin-bottom:6px;">Sentença final</div>
+      <div class="big-score" id="finalScore">0</div>
+      <div class="of">pontos nesta sessão</div>
+    </div>
+    <div class="results-grid" id="resultsGrid"></div>
+    <div class="achv-row" id="achvRow"></div>
+    <div class="canvas-wrap">
+      <h3>Desempenho por tema</h3>
+      <canvas id="statsCanvas" width="820" height="240" style="width:100%;height:auto;"></canvas>
+    </div>
+    <div class="rec-box">
+      <h4>O que revisar</h4>
+      <ul id="recList"></ul>
+    </div>
+    <div class="save-row">
+      <input type="text" id="playerName" placeholder="Seu nome para o ranking" maxlength="24">
+      <button class="primary-btn" id="saveRankBtn">Salvar no ranking</button>
+    </div>
+    <div class="result-actions">
+      <button class="secondary-btn" id="playAgainBtn">Jogar de novo</button>
+      <button class="secondary-btn" id="backHomeBtn">Voltar ao início</button>
+    </div>
+  </div>
+
+  <!-- ===================== RANKING ===================== -->
+  <div class="screen" id="screen-ranking">
+    <h2 style="color:var(--text-on-ink);margin-bottom:16px;">🏆 Ranking local</h2>
+    <ul class="rank-list" id="rankList"></ul>
+    <div class="home-footer"><button class="ghost-btn" id="rankBackBtn">← Voltar</button></div>
+  </div>
+
+  <!-- ===================== STATS ===================== -->
+  <div class="screen" id="screen-stats">
+    <h2 style="color:var(--text-on-ink);margin-bottom:16px;">📊 Meu desempenho histórico</h2>
+    <div class="results-grid" id="globalStatsGrid"></div>
+    <div class="canvas-wrap">
+      <h3>Acertos por tema (histórico)</h3>
+      <canvas id="globalStatsCanvas" width="820" height="240" style="width:100%;height:auto;"></canvas>
+    </div>
+    <div class="home-footer"><button class="ghost-btn" id="statsBackBtn">← Voltar</button></div>
+  </div>
+
+</div>
+
+<script>
+/* =========================================================
+   1. DADOS — Banco de questões
+   Organizado por tema (topic) e dificuldade (facil/intermediaria/dificil).
+   Estrutura pensada para expansão fácil: basta seguir o mesmo formato
+   de objeto e inserir no array correspondente.
+   ========================================================= */
+
+const TOPICS = {
+  fundamentos: "Fundamentos e princípios",
+  denuncia: "Denúncia e recebimento",
+  resposta: "Resposta à acusação e citação",
+  absolvicao: "Absolvição sumária",
+  audiencia: "Audiência de instrução",
+  prisao: "Prisão preventiva"
+};
+
+const MC = [
+{topic:"fundamentos",difficulty:"facil",question:"Qual a principal diferença entre processo e procedimento no Direito Processual Penal?",options:["Processo é a relação jurídica que se instaura em juízo; procedimento é o rito, a forma como os atos se sucedem no tempo","Processo e procedimento são sinônimos e podem ser usados indistintamente","Procedimento é a garantia constitucional; processo é apenas o conjunto de peças físicas do inquérito","Processo se refere apenas à fase policial; procedimento, à fase judicial"],correct:0,explanation:"Processo é o instrumento pelo qual o Estado exerce a jurisdição, uma relação jurídica triangular entre autor, réu e juiz. Procedimento é a exteriorização formal do processo, a sequência concatenada de atos até a decisão final. Um mesmo processo pode seguir procedimentos distintos (ordinário, sumário, sumaríssimo, especiais).",article:null,tip:"Pense assim: processo é o 'conteúdo' (a relação jurídica); procedimento é a 'embalagem' (a forma dos atos)."},
+{topic:"fundamentos",difficulty:"facil",question:"Como a Constituição Federal de 1988 influenciou a leitura do Código de Processo Penal de 1941?",options:["O CPP foi revogado integralmente pela Constituição","O CPP passou a ser interpretado conforme os princípios e garantias constitucionais, havendo filtragem constitucional de seus dispositivos","A Constituição não interfere em normas processuais penais infraconstitucionais","O CPP tornou-se hierarquicamente superior à Constituição em matéria penal"],correct:1,explanation:"O CPP é anterior à CF/88 e nasceu sob inspiração autoritária (Código Rocco). Por isso, a doutrina fala em filtragem constitucional: todo dispositivo do CPP deve ser lido à luz do devido processo legal, do contraditório, da ampla defesa e da presunção de inocência, sob pena de não recepção ou interpretação conforme a Constituição.",article:null,tip:"Sempre que uma norma do CPP soar autoritária ou inquisitorial, pergunte-se: ela sobrevive ao filtro constitucional?"},
+{topic:"fundamentos",difficulty:"intermediaria",question:"O princípio do Estado Democrático de Direito, aplicado ao processo penal, resulta principalmente em:",options:["Concentração de poderes nas mãos do juiz para buscar a verdade real a qualquer custo","Um processo penal acusatório, com separação de funções entre acusar, defender e julgar, e respeito às garantias fundamentais do investigado/réu","Dispensa de fundamentação das decisões judiciais em nome da celeridade","Prevalência do interesse da acusação sobre os direitos do acusado"],correct:1,explanation:"O Estado Democrático de Direito impõe um processo penal de partes (sistema acusatório), no qual o juiz não pode acusar de ofício, cabendo-lhe apenas julgar com imparcialidade, enquanto MP e defesa atuam em contraditório. É a antítese do sistema inquisitorial.",article:null,tip:"Estado Democrático de Direito = sistema acusatório = juiz-espectador, não juiz-ator."},
+{topic:"fundamentos",difficulty:"facil",question:"A presunção de inocência (ou não culpabilidade) prevista no art. 5º, LVII, da CF/88 significa que:",options:["O réu deve provar sua inocência para não ser condenado","Ninguém será considerado culpado até o trânsito em julgado de sentença penal condenatória","A prisão em flagrante é sempre inconstitucional","A presunção de inocência se aplica apenas aos crimes de menor potencial ofensivo"],correct:1,explanation:"O art. 5º, LVII, da CF estabelece que ninguém será considerado culpado até o trânsito em julgado de sentença penal condenatória. Isso distribui o ônus da prova à acusação e impõe tratamento de não culpado ao longo de toda a persecução penal, sem impedir medidas cautelares excepcionais e fundamentadas.",article:"art. 5º, LVII, CF",tip:"Presunção de inocência não é 'presunção absoluta de que nada aconteceu' — é regra de tratamento e de distribuição do ônus probatório."},
+{topic:"fundamentos",difficulty:"intermediaria",question:"O contraditório no processo penal contemporâneo é entendido, sobretudo, como:",options:["Mero direito de ser informado dos atos processuais, sem poder de influência","Direito de participação com real capacidade de influenciar a formação do convencimento do julgador, e não apenas de ser ouvido","Prerrogativa exclusiva da acusação","Garantia que só se aplica na fase de execução penal"],correct:1,explanation:"Superou-se a visão do contraditório como simples 'dar ciência e permitir manifestação'. Hoje se exige o contraditório substancial ou contraditório para a prova/decisão: as partes devem ter real poder de influência sobre o convencimento judicial, sob pena de o processo se tornar teatro decorativo.",article:null,tip:"Contraditório = informação + reação com poder de influência real, não apenas simbólica."},
+{topic:"fundamentos",difficulty:"facil",question:"A ampla defesa desdobra-se classicamente em:",options:["Defesa técnica (por advogado) e autodefesa (exercida pelo próprio acusado)","Defesa prévia e defesa posterior, ambas facultativas","Apenas a defesa técnica, sendo a autodefesa dispensável","Defesa parcial, aplicável somente a crimes de menor potencial ofensivo"],correct:0,explanation:"A ampla defesa compreende a defesa técnica, exercida por profissional habilitado (indisponível, sob pena de nulidade absoluta) e a autodefesa, exercida pelo próprio acusado (direito de audiência e de presença), esta sim disponível, podendo o réu, por exemplo, permanecer em silêncio.",article:"art. 5º, LV, CF",tip:"Defesa técnica é indisponível; autodefesa é disponível (o réu pode calar-se, pode não comparecer em certas hipóteses)."},
+{topic:"fundamentos",difficulty:"intermediaria",question:"O princípio do ne bis in idem (non bis in idem) no processo penal veda:",options:["A produção de mais de uma prova sobre o mesmo fato","Que alguém seja processado, julgado ou punido mais de uma vez pelo mesmo fato","A interposição de mais de um recurso pela defesa","A oitiva de mais de uma testemunha sobre o mesmo fato"],correct:1,explanation:"O ne bis in idem impede a dupla persecução penal ou dupla punição pelo mesmo fato, seja no plano processual (litispendência, coisa julgada), seja no plano material (proibição de valorar a mesma circunstância duas vezes, como ocorre na vedação à dupla valoração na dosimetria da pena).",article:null,tip:"Pense em três dimensões do non bis in idem: processual, material (dosimetria) e executória."},
+{topic:"fundamentos",difficulty:"dificil",question:"Sobre o juiz das garantias, introduzido pela Lei 13.964/2019 (Pacote Anticrime), é correto afirmar que:",options:["Atua da instauração do inquérito até o recebimento da denúncia, cabendo-lhe o controle da legalidade da investigação e das medidas cautelares, sem participar da instrução e do julgamento","Substitui definitivamente o juiz do processo em todas as fases, inclusive na sentença","É figura já extinta do ordenamento, tendo sido declarada integralmente inconstitucional pelo STF","Atua exclusivamente nos processos de competência do Tribunal do Júri"],correct:0,explanation:"O juiz das garantias é responsável pelo controle da legalidade da investigação criminal e pela salvaguarda dos direitos do investigado, atuando desde a instauração do inquérito até o recebimento da denúncia. Após o recebimento, a competência passa ao juiz da instrução e julgamento, que não deve ter tido contato prévio com os elementos da investigação, para preservar a imparcialidade.",article:"art. 3º-B e seguintes, CPP",tip:"Juiz das garantias = fase pré-processual (investigação); juiz da instrução = fase processual (após recebimento da denúncia)."},
+{topic:"fundamentos",difficulty:"dificil",question:"A razão de ser da separação entre juiz das garantias e juiz da instrução e julgamento está fundamentalmente ligada a qual princípio?",options:["Celeridade processual, apenas","Imparcialidade objetiva do julgador, evitando-se que o juiz que teve contato com elementos informativos da investigação profira a sentença","Publicidade dos atos processuais","Economia processual e redução de custos do Judiciário"],correct:1,explanation:"O modelo busca resguardar a imparcialidade objetiva: o juiz que decide sobre medidas cautelares e legalidade da investigação pode, ainda que inconscientemente, formar juízo prévio de culpabilidade. Separar as funções previne a contaminação cognitiva do julgador que conduzirá a instrução e proferirá a sentença.",article:null,tip:"Imparcialidade objetiva = preocupação com a aparência de imparcialidade, não apenas com a intenção subjetiva do juiz."},
+{topic:"denuncia",difficulty:"facil",question:"No procedimento comum ordinário, a peça acusatória em ação penal pública é oferecida por:",options:["Pelo ofendido, sempre","Pelo Ministério Público","Pela autoridade policial","Pelo próprio juiz, de ofício"],correct:1,explanation:"Na ação penal pública (incondicionada ou condicionada à representação), a titularidade é do Ministério Público, que oferece denúncia. Na ação penal privada, a titularidade é do ofendido ou de seu representante legal, que oferece queixa-crime.",article:"art. 24 e art. 41, CPP",tip:"MP oferece denúncia; ofendido oferece queixa-crime. Nunca confunda os nomes das peças."},
+{topic:"denuncia",difficulty:"facil",question:"Nos crimes de ação penal privada, a peça acusatória é denominada:",options:["Denúncia","Queixa-crime","Representação criminal","Notitia criminis"],correct:1,explanation:"A queixa-crime é a peça inicial da ação penal privada, oferecida pelo ofendido (ou seu representante legal) por meio de advogado com poderes especiais, dentro do prazo decadencial de 6 meses, sob pena de extinção da punibilidade.",article:"art. 30 e art. 38, CPP",tip:"Queixa = privada; Denúncia = pública. 'Q' de queixa, 'q' de quem sofreu o crime."},
+{topic:"denuncia",difficulty:"intermediaria",question:"São requisitos da denúncia ou queixa, nos termos do art. 41 do CPP:",options:["Apenas a qualificação do acusado e a assinatura do promotor","A exposição do fato criminoso com todas as circunstâncias, a qualificação do acusado (ou dados para identificá-lo), a classificação do crime e, quando necessário, o rol de testemunhas","Somente a classificação jurídica do crime","A confissão do acusado, sob pena de inépcia"],correct:1,explanation:"O art. 41 do CPP exige: (i) exposição do fato criminoso com todas as circunstâncias; (ii) qualificação do acusado ou esclarecimentos para identificá-lo; (iii) classificação do crime; (iv) rol de testemunhas, quando necessário. A ausência desses elementos pode gerar inépcia da inicial.",article:"art. 41, CPP",tip:"Decore o mnemônico: FATO + QUALIFICAÇÃO + CLASSIFICAÇÃO + TESTEMUNHAS."},
+{topic:"denuncia",difficulty:"intermediaria",question:"São hipóteses de rejeição da denúncia ou queixa previstas no art. 395 do CPP, EXCETO:",options:["Ser a denúncia ou queixa manifestamente inepta","Faltar pressuposto processual ou condição para o exercício da ação penal","Faltar justa causa para o exercício da ação penal","O acusado ser reincidente em crime doloso"],correct:3,explanation:"O art. 395 do CPP prevê três hipóteses de rejeição: inépcia da inicial, ausência de pressuposto processual ou condição da ação, e ausência de justa causa (lastro probatório mínimo). Reincidência é circunstância de dosimetria da pena, não causa de rejeição da denúncia.",article:"art. 395, CPP",tip:"Rejeição = inépcia, ausência de pressuposto/condição, ou ausência de justa causa. Nada relacionado ao mérito da pena."},
+{topic:"denuncia",difficulty:"facil",question:"O recebimento da denúncia ou queixa tem, entre seus efeitos, a:",options:["Absolvição sumária automática do acusado","Interrupção do prazo prescricional","Extinção da punibilidade","Revogação automática de eventual prisão preventiva"],correct:1,explanation:"O recebimento da denúncia é marco interruptivo da prescrição (art. 117, I, do Código Penal). Além disso, gera prevenção do juízo e transforma o investigado/indiciado em acusado (réu), com todas as consequências processuais daí decorrentes.",article:"art. 117, I, CP",tip:"Três efeitos do recebimento: (1) interrompe prescrição; (2) gera prevenção; (3) indiciado vira réu."},
+{topic:"denuncia",difficulty:"intermediaria",question:"Além de interromper a prescrição, o recebimento da denúncia também acarreta:",options:["A prevenção do juízo e a transformação do investigado em acusado (réu)","A produção antecipada obrigatória de todas as provas","A decretação automática da prisão preventiva","A citação por edital obrigatória"],correct:0,explanation:"O recebimento formaliza a relação processual: o investigado passa à condição de acusado (réu), e o juízo que recebeu a denúncia torna-se prevento para os atos posteriores do processo. Não há qualquer automatismo quanto à prisão preventiva, que exige decisão fundamentada específica.",article:"arts. 75 e 76, CPP (prevenção)",tip:"Recebimento não gera prisão automática — cautelares exigem fundamentação própria (art. 312, CPP)."},
+{topic:"denuncia",difficulty:"dificil",question:"Qual o entendimento predominante sobre a fundamentação da decisão que recebe a denúncia?",options:["Deve ser tão exaustivamente fundamentada quanto uma sentença condenatória, sob pena de nulidade absoluta sempre","Por se tratar de juízo de admissibilidade (cognição sumária sobre justa causa), a fundamentação pode ser sucinta, sem necessidade de exame aprofundado de mérito, mas não pode ser totalmente ausente","A decisão de recebimento dispensa qualquer fundamentação, por ser ato de mero expediente","Só é necessária fundamentação quando o crime for de competência do Tribunal do Júri"],correct:1,explanation:"A jurisprudência majoritária, inclusive do STF, reconhece que o recebimento da denúncia é decisão de cognição sumária (não se examina o mérito da acusação, apenas a presença dos requisitos legais e justa causa), podendo ser sucinta. Isso não a dispensa, porém, de fundamentação mínima, sob pena de nulidade, já que toda decisão judicial deve ser motivada (art. 93, IX, CF).",article:"art. 93, IX, CF",tip:"Recebimento = fundamentação sucinta é aceitável, mas fundamentação zero não é."},
+{topic:"denuncia",difficulty:"intermediaria",question:"Qual o recurso cabível contra a decisão que REJEITA a denúncia ou queixa?",options:["Apelação","Recurso em Sentido Estrito (RESE)","Embargos infringentes","Agravo em execução"],correct:1,explanation:"Contra a decisão que rejeita a denúncia ou queixa cabe Recurso em Sentido Estrito, nos termos do art. 581, I, do CPP. Já contra o recebimento da denúncia, em regra, não há recurso próprio previsto em lei, sendo cabível, quando necessário, o manejo de habeas corpus para impugnar ilegalidade flagrante.",article:"art. 581, I, CPP",tip:"Rejeitou → RESE (recurso do MP/querelante). Recebeu → sem recurso específico; via de regra, HC."},
+{topic:"resposta",difficulty:"facil",question:"Após o recebimento da denúncia, o juiz ordenará a citação do acusado para apresentar resposta à acusação no prazo de:",options:["5 dias","10 dias","15 dias","30 dias"],correct:1,explanation:"Recebida a denúncia ou queixa, o juiz determinará a citação do acusado para responder à acusação, por escrito, no prazo de 10 dias, conforme art. 396 do CPP.",article:"art. 396, CPP",tip:"10 dias para resposta à acusação — mesmo prazo, coincidentemente, de vários atos processuais penais."},
+{topic:"resposta",difficulty:"intermediaria",question:"A resposta à acusação constitui defesa técnica obrigatória. Caso o acusado, citado, não constitua advogado nem apresente resposta, o juiz deverá:",options:["Considerar a ausência como confissão ficta e proferir sentença condenatória de plano","Nomear defensor para oferecer a resposta em novo prazo, sob pena de nulidade absoluta pela ausência de defesa técnica","Extinguir o processo sem julgamento de mérito","Determinar o arquivamento do inquérito"],correct:1,explanation:"A defesa técnica é indisponível e obrigatória em todo o processo penal. Se o acusado não constituir advogado, o juiz nomeará defensor dativo/público para apresentar a resposta, sob pena de nulidade absoluta, nos termos da Súmula 523 do STF, que distingue falta de defesa (nulidade absoluta) de deficiência de defesa (nulidade relativa, exige prova de prejuízo).",article:"art. 396-A, §2º, CPP; Súmula 523, STF",tip:"Falta de defesa = nulidade absoluta. Defesa deficiente = nulidade relativa (precisa provar prejuízo)."},
+{topic:"resposta",difficulty:"facil",question:"A citação pessoal do acusado é feita, em regra, por meio de:",options:["Edital publicado no Diário Oficial","Mandado cumprido por oficial de justiça","Publicação em jornal de grande circulação","Comunicação verbal informal por terceiros"],correct:1,explanation:"A citação pessoal é a regra geral no processo penal, realizada por mandado cumprido por oficial de justiça, que localiza o acusado e o cientifica pessoalmente da acusação, entregando a contrafé.",article:"art. 351 e seguintes, CPP",tip:"Citação pessoal = mandado + oficial de justiça. É a forma preferencial e mais garantista."},
+{topic:"resposta",difficulty:"intermediaria",question:"A citação por hora certa no processo penal é cabível quando:",options:["O acusado está preso em outra unidade da federação","Há fundada suspeita de que o acusado se oculta para não ser citado pessoalmente","O acusado reside no exterior em local incerto","O crime é de menor potencial ofensivo"],correct:1,explanation:"A citação por hora certa (art. 362 do CPP, com aplicação subsidiária das regras do CPC) ocorre quando o oficial de justiça, por duas vezes, suspeitar que o acusado está se ocultando para não ser citado, procedendo então à intimação de familiar ou vizinho e comparecendo em horário certo posteriormente marcado.",article:"art. 362, CPP",tip:"Hora certa = suspeita de ocultação proposital do citando, após tentativas frustradas."},
+{topic:"resposta",difficulty:"intermediaria",question:"Quando o acusado não é encontrado para citação pessoal e nem se enquadra na hora certa, a citação é feita:",options:["Por edital, suspendendo-se o processo e, conforme o caso, o curso do prazo prescricional","Por telefone, mediante gravação da ligação","Automaticamente considerada válida sem qualquer citação formal","Por meio de citação tácita, presumindo-se a ciência do acusado"],correct:0,explanation:"Não sendo encontrado o acusado, procede-se à citação por edital. Se o acusado não comparecer nem constituir advogado, o processo e o curso do prazo prescricional ficam suspensos (art. 366 do CPP), podendo o juiz determinar produção antecipada de provas urgentes e, se for o caso, decretar prisão preventiva, desde que presentes os requisitos legais.",article:"arts. 361 e 366, CPP",tip:"Edital sem comparecimento = suspensão do processo E da prescrição (art. 366) — não é automatismo indefinido, exige acompanhamento periódico do prazo."},
+{topic:"absolvicao",difficulty:"facil",question:"A absolvição sumária no procedimento comum ordinário está prevista no:",options:["Art. 397 do CPP","Art. 41 do CPP","Art. 312 do CPP","Art. 155 do CPP"],correct:0,explanation:"O art. 397 do CPP disciplina a absolvição sumária, que pode ocorrer logo após a resposta à acusação, antes da instrução, quando o juiz verificar, de plano, alguma das hipóteses legais que tornam desnecessário o prosseguimento do processo.",article:"art. 397, CPP",tip:"Absolvição sumária = art. 397. Ocorre depois da resposta à acusação, antes da instrução."},
+{topic:"absolvicao",difficulty:"intermediaria",question:"São hipóteses de absolvição sumária previstas no art. 397 do CPP, EXCETO:",options:["Existência manifesta de causa excludente da ilicitude do fato","Existência manifesta de causa excludente da culpabilidade do agente, salvo inimputabilidade","Insuficiência de provas para a condenação ao final da instrução","Extinção da punibilidade do agente"],correct:2,explanation:"As hipóteses do art. 397 são: (i) excludente de ilicitude manifesta; (ii) excludente de culpabilidade manifesta (exceto inimputabilidade, que gera absolvição imprópria com medida de segurança apenas ao final, após instrução); (iii) fato narrado que evidentemente não constitui crime; (iv) extinção da punibilidade. 'Insuficiência de provas ao final da instrução' é hipótese de absolvição do art. 386, não de absolvição sumária, que ocorre antes da instrução.",article:"art. 397, CPP",tip:"Absolvição sumária exige certeza manifesta e prévia, dispensando a instrução — não se confunde com absolvição por insuficiência probatória ao final do processo (art. 386)."},
+{topic:"absolvicao",difficulty:"dificil",question:"Por que a inimputabilidade do agente, isoladamente, não autoriza a absolvição sumária mesmo sendo manifesta?",options:["Porque a inimputabilidade nunca pode ser reconhecida no processo penal","Porque, se reconhecida isoladamente (sem outra excludente), a absolvição seria imprópria, com aplicação de medida de segurança, o que exige instrução para se apurar a materialidade e autoria do fato","Porque a inimputabilidade é matéria estranha ao processo penal, cabendo apenas ao juízo cível","Porque a lei veda expressamente qualquer decisão antes da sentença final em casos de inimputabilidade"],correct:1,explanation:"Quando a única tese é a inimputabilidade (art. 26, caput, do CP), a absolvição sumária é vedada pelo próprio art. 397, parágrafo único, do CPP, porque a absolvição, nesse caso, seria imprópria (com imposição de medida de segurança), exigindo-se instrução para comprovar materialidade e autoria antes de tal medida, que também é uma sanção penal em sentido amplo.",article:"art. 397, parágrafo único, CPP",tip:"Inimputabilidade isolada NÃO gera absolvição sumária — é a exceção expressa da regra do art. 397."},
+{topic:"audiencia",difficulty:"facil",question:"No procedimento comum ordinário, a fase seguinte à resposta à acusação (não havendo absolvição sumária) é:",options:["A sentença diretamente","A designação de audiência de instrução e julgamento","O arquivamento do processo","A citação por edital, obrigatoriamente"],correct:1,explanation:"Não sendo caso de absolvição sumária, o juiz designará audiência de instrução e julgamento, na qual serão produzidas as provas orais (declarações do ofendido, testemunhas, esclarecimentos periciais) e realizado o interrogatório do acusado, seguindo-se debates e sentença.",article:"art. 399 e seguintes, CPP",tip:"Resposta à acusação → (sem absolvição sumária) → Audiência de Instrução e Julgamento (AIJ)."},
+{topic:"audiencia",difficulty:"intermediaria",question:"Segundo o art. 400 do CPP, a ordem dos atos na audiência de instrução e julgamento é:",options:["Interrogatório do réu, seguido de testemunhas de defesa e depois de acusação","Declarações do ofendido, testemunhas de acusação, testemunhas de defesa, esclarecimentos de peritos, acareações e reconhecimento, e, por último, interrogatório do réu","Alegações finais, seguidas de interrogatório e depois testemunhas","Sentença, interrogatório e, por fim, produção de provas"],correct:1,explanation:"O art. 400 do CPP estabelece a ordem: declarações do ofendido, oitiva das testemunhas arroladas pela acusação, oitiva das testemunhas arroladas pela defesa, esclarecimentos dos peritos, acareações e reconhecimento de pessoas e coisas, e, por derradeiro, o interrogatório do acusado, que passou a ser o último ato da instrução após a reforma de 2008.",article:"art. 400, CPP",tip:"Decore: Ofendido → Testemunhas de Acusação → Testemunhas de Defesa → Perícia/Acareação/Reconhecimento → Interrogatório (por último)."},
+{topic:"audiencia",difficulty:"dificil",question:"O interrogatório do réu, na sistemática atual, é realizado:",options:["Como primeiro ato da audiência de instrução e julgamento","Como último ato da instrução, garantindo ao acusado o pleno conhecimento da prova produzida antes de se manifestar","Antes do oferecimento da denúncia","Apenas por meio de carta precatória, nunca em audiência presencial"],correct:1,explanation:"Desde a reforma processual de 2008 (Lei 11.719/2008), o interrogatório passou a ser o último ato da instrução, o que reforça seu caráter de meio de defesa (e não apenas meio de prova): o acusado se manifesta já ciente de todo o conteúdo produzido em seu desfavor ou a seu favor, otimizando o exercício da autodefesa.",article:"art. 400, CPP",tip:"Interrogatório por último = valorização do interrogatório como ato de defesa, não de mera coleta de prova para acusação."},
+{topic:"audiencia",difficulty:"dificil",question:"Qual a consequência processual reconhecida pela jurisprudência quando há inversão da ordem legal de oitiva das testemunhas (ex: testemunha de defesa ouvida antes da de acusação)?",options:["Nulidade absoluta automática, independentemente de qualquer análise de prejuízo","Nulidade relativa, exigindo-se a comprovação de efetivo prejuízo para a parte que suscita o vício (pas de nullité sans grief)","Nenhuma consequência, pois a ordem do art. 400 é meramente sugestiva","Extinção automática da punibilidade do acusado"],correct:1,explanation:"A jurisprudência do STF e STJ entende que a inversão da ordem de oitiva de testemunhas prevista no art. 400 do CPP configura nulidade relativa, aplicando-se o princípio pas de nullité sans grief: a parte interessada deve arguir o vício em momento oportuno e demonstrar o prejuízo concreto decorrente da inversão, sob pena de preclusão e convalidação do ato.",article:"art. 400, CPP; princípio pas de nullité sans grief",tip:"Toda nulidade relativa: (1) precisa ser arguida no momento certo; (2) exige prova de prejuízo. Sem isso, o ato se convalida."},
+{topic:"audiencia",difficulty:"intermediaria",question:"Encerrada a instrução, caso não sejam necessárias diligências complementares, a fase seguinte é:",options:["Nova citação do acusado","Alegações finais orais (debates) ou, em substituição, apresentação de memoriais escritos, seguidos de sentença","Recurso automático ao tribunal","Arquivamento do processo, independentemente do mérito"],correct:1,explanation:"Encerrada a instrução, seguem-se os debates orais (alegações finais), com tempo determinado para acusação e defesa. Havendo complexidade do caso, número elevado de acusados ou outra razão relevante, o juiz pode converter os debates em memoriais escritos, prazo sucessivo, e após isso profere sentença.",article:"art. 403 e art. 404, CPP",tip:"Regra: alegações finais orais na própria audiência. Exceção justificada: memoriais escritos por prazo sucessivo (geralmente 5 dias cada parte)."},
+{topic:"audiencia",difficulty:"intermediaria",question:"Havendo necessidade de diligência imprescindível revelada no curso da instrução, o juiz deverá:",options:["Ignorar a diligência e proferir sentença de imediato","Determinar a realização da diligência antes de encerrar a instrução, garantindo o contraditório sobre a nova prova","Absolver sumariamente o acusado","Extinguir o processo sem julgamento de mérito"],correct:1,explanation:"O art. 402 do CPP permite que, encerrada a instrução, as partes requeiram diligências cuja necessidade se origine de circunstâncias ou fatos apurados na instrução, cabendo ao juiz decidir fundamentadamente sobre sua pertinência antes de proferir sentença ou determinar a apresentação de alegações finais.",article:"art. 402, CPP",tip:"Diligências pós-instrução são exceção e exigem necessidade concreta revelada durante a própria instrução, não mero inconformismo da parte."},
+{topic:"audiencia",difficulty:"facil",question:"No procedimento comum ordinário, o prazo total para conclusão do processo (encerramento da instrução com sentença), especialmente quando o réu está preso, deve observar:",options:["Prazo indeterminado, sem qualquer parâmetro legal","Um prazo razoável, tradicionalmente estimado em até 60 dias para a conclusão da instrução, à luz do princípio da razoável duração do processo","Prazo mínimo de 5 anos","Prazo de 24 horas, contado da citação"],correct:1,explanation:"Embora o CPP não fixe um prazo único e rígido para toda e qualquer hipótese, a doutrina e a jurisprudência, somando os prazos legais de cada fase do rito ordinário, costumam apontar um parâmetro de referência de aproximadamente 60 dias para a conclusão da instrução quando o réu está preso, em atenção à razoável duração do processo (art. 5º, LXXVIII, CF) e ao excesso de prazo como fundamento de relaxamento de prisão.",article:"art. 5º, LXXVIII, CF",tip:"Não existe prazo mágico único no CPP — o parâmetro de 60 dias é construção doutrinário-jurisprudencial pela soma dos prazos legais, relevante sobretudo para réu preso."},
+{topic:"prisao",difficulty:"facil",question:"A prisão preventiva, por ser medida cautelar, exige para sua decretação:",options:["Simples requerimento da autoridade policial, sem necessidade de decisão judicial","Decisão judicial fundamentada, demonstrando a presença do fumus comissi delicti e do periculum libertatis, além dos requisitos legais específicos","Confissão prévia do investigado","Trânsito em julgado de sentença condenatória"],correct:1,explanation:"A prisão preventiva é medida cautelar extrema, que exige decisão judicial fundamentada, evidenciando prova da existência do crime e indícios suficientes de autoria (fumus comissi delicti), risco à ordem pública, econômica, instrução criminal ou aplicação da lei penal (periculum libertatis), e a inadequação de medidas cautelares diversas.",article:"arts. 312 e 313, CPP",tip:"Prisão preventiva não é antecipação de pena — é cautelar, excepcional e precisa de fundamentação concreta, não abstrata."},
+{topic:"prisao",difficulty:"intermediaria",question:"O art. 316, parágrafo único, do CPP, incluído pelo Pacote Anticrime, estabelece que:",options:["A prisão preventiva é permanente e não pode ser revista","O juiz deve revisar a necessidade da manutenção da prisão preventiva a cada 90 dias, mediante decisão fundamentada","A prisão preventiva deve ser revista a cada 5 anos","A revisão da prisão preventiva é facultativa e sem prazo definido"],correct:1,explanation:"O art. 316, parágrafo único, do CPP determina que o juiz revise a necessidade de manutenção da prisão preventiva a cada 90 dias, mediante decisão fundamentada, de ofício ou mediante provocação do Ministério Público ou da defesa, reforçando o caráter excepcional e não perene da medida cautelar.",article:"art. 316, parágrafo único, CPP",tip:"Revisão a cada 90 dias = controle periódico da necessidade da prisão, evitando perpetuação sem reavaliação."},
+{topic:"prisao",difficulty:"dificil",question:"Qual foi o entendimento fixado pelo STF nas ADIs 6581 e 6582 sobre a consequência do descumprimento do prazo de revisão de 90 dias previsto no art. 316, parágrafo único, do CPP?",options:["O descumprimento do prazo gera, automática e obrigatoriamente, a soltura imediata e irreversível do preso, sem qualquer análise judicial adicional","O descumprimento do prazo não implica automaticamente a soltura do preso; cabe ao órgão do Poder Judiciário ser comunicado para avaliar, em decisão fundamentada, a manutenção ou não da prisão, evitando-se automatismo mecânico","O art. 316, parágrafo único, foi declarado integralmente inconstitucional, deixando de existir a obrigação de revisão periódica","A revisão periódica passou a ser exigida apenas para crimes hediondos"],correct:1,explanation:"Nas ADIs 6581 e 6582, o STF fixou entendimento de que a ausência de revisão da prisão preventiva no prazo de 90 dias não acarreta a soltura automática do preso, evitando-se um automatismo que poderia gerar risco à ordem pública. Reconheceu-se, contudo, o dever do magistrado de realizar a revisão periódica, sob pena de responsabilização funcional e de o caso ser submetido a exame judicial imediato para decidir, fundamentadamente, sobre a manutenção ou não da custódia.",article:"art. 316, parágrafo único, CPP; ADIs 6581 e 6582, STF",tip:"Descumprir o prazo de 90 dias não solta automaticamente — mas o juiz deve ser instado a decidir de forma fundamentada e célere."}
+];
+
+const TF = [
+{topic:"fundamentos",statement:"Processo e procedimento são conceitos idênticos, podendo ser usados como sinônimos perfeitos na dogmática processual penal.",answer:false,explanation:"São conceitos distintos: processo é a relação jurídica; procedimento é a forma exterior dessa relação, o rito dos atos no tempo.",article:null,tip:"Se a questão igualar processo e procedimento sem ressalvas, desconfie — é pegadinha clássica."},
+{topic:"fundamentos",statement:"O sistema acusatório pressupõe a separação das funções de acusar, defender e julgar, vedando-se a gestão da prova pelo juiz de ofício como regra.",answer:true,explanation:"O sistema acusatório, adotado como diretriz constitucional, separa nitidamente as funções processuais, cabendo ao juiz posição de garante da legalidade e imparcialidade, e não de protagonista da acusação ou da busca da verdade a qualquer custo.",article:null,tip:"Acusatório = juiz espectador-garante; inquisitorial = juiz-ator."},
+{topic:"fundamentos",statement:"A presunção de inocência impede, em qualquer hipótese, a decretação de prisão cautelar antes do trânsito em julgado.",answer:false,explanation:"A presunção de inocência não é incompatível com prisões cautelares (preventiva, temporária, flagrante), desde que fundamentadas em requisitos legais específicos e não configurem execução antecipada de pena.",article:"art. 312, CPP",tip:"Presunção de inocência convive com cautelares excepcionais e fundamentadas — não as proíbe de forma absoluta."},
+{topic:"fundamentos",statement:"A autodefesa, ao contrário da defesa técnica, é direito disponível, podendo o acusado, por exemplo, optar por não comparecer a determinados atos ou permanecer em silêncio.",answer:true,explanation:"A autodefesa é disponível: o próprio acusado pode abrir mão de exercê-la (direito ao silêncio, ausência em certos atos), diferentemente da defesa técnica, que é indisponível e obrigatória.",article:"art. 5º, LXIII, CF",tip:"Direito ao silêncio é manifestação clássica da disponibilidade da autodefesa."},
+{topic:"fundamentos",statement:"O juiz das garantias atua durante toda a instrução processual, inclusive na audiência de instrução e julgamento e na sentença.",answer:false,explanation:"O juiz das garantias atua apenas na fase pré-processual (investigação), cessando sua competência com o recebimento da denúncia. A partir daí, assume o juiz da instrução e julgamento.",article:"art. 3º-C, CPP",tip:"Juiz das garantias sai de cena exatamente no recebimento da denúncia."},
+{topic:"fundamentos",statement:"O non bis in idem impede apenas a instauração de dois processos penais pelo mesmo fato, não tendo qualquer repercussão na dosimetria da pena.",answer:false,explanation:"O non bis in idem também opera no plano material, vedando que a mesma circunstância seja valorada mais de uma vez na dosimetria da pena (ex: usar a mesma qualificadora como agravante).",article:null,tip:"Non bis in idem tem faceta processual (persecução dupla) e faceta material (dupla valoração na pena)."},
+{topic:"denuncia",statement:"A denúncia é a peça acusatória cabível em qualquer ação penal, seja ela pública ou privada.",answer:false,explanation:"A denúncia é exclusiva da ação penal pública, oferecida pelo Ministério Público. Na ação penal privada, a peça é a queixa-crime, oferecida pelo ofendido.",article:"arts. 24 e 30, CPP",tip:"Denúncia = MP (pública). Queixa = ofendido (privada). Não confunda os nomes."},
+{topic:"denuncia",statement:"A ausência do rol de testemunhas na denúncia sempre acarreta sua rejeição por inépcia, independentemente das circunstâncias do caso.",answer:false,explanation:"O rol de testemunhas só é exigido 'quando necessário' (art. 41, CPP). Sua ausência não gera automaticamente inépcia se os demais requisitos estiverem presentes e não houver prejuízo à defesa.",article:"art. 41, CPP",tip:"Rol de testemunhas é requisito condicional ('quando necessário'), não absoluto."},
+{topic:"denuncia",statement:"A rejeição da denúncia por ausência de justa causa pressupõe a inexistência de lastro probatório mínimo que indique a materialidade e indícios de autoria.",answer:true,explanation:"A justa causa é a exigência de lastro probatório mínimo para o exercício da ação penal, evitando acusações levianas ou infundadas. Sua ausência é causa de rejeição, conforme art. 395, III, do CPP.",article:"art. 395, III, CPP",tip:"Justa causa = suporte probatório mínimo; sem ele, a denúncia é natimorta."},
+{topic:"denuncia",statement:"O recebimento da denúncia transforma o investigado, até então indiciado, na condição jurídica de acusado ou réu.",answer:true,explanation:"É exatamente um dos efeitos centrais do recebimento: o investigado passa a ostentar a qualidade de acusado (réu), com os ônus e garantias processuais próprios dessa condição.",article:null,tip:"Indiciado (fase investigatória) → Acusado/Réu (fase processual, após recebimento)."},
+{topic:"denuncia",statement:"Contra a decisão que rejeita a denúncia cabe apelação, e não Recurso em Sentido Estrito.",answer:false,explanation:"O recurso cabível contra a rejeição da denúncia é o Recurso em Sentido Estrito (RESE), nos termos do art. 581, I, do CPP, e não a apelação.",article:"art. 581, I, CPP",tip:"Rejeição de denúncia = RESE. Guarde essa associação direta."},
+{topic:"denuncia",statement:"A decisão que recebe a denúncia exige fundamentação tão robusta quanto a de uma sentença condenatória, sob pena de nulidade absoluta em qualquer hipótese.",answer:false,explanation:"Por se tratar de cognição sumária, a fundamentação do recebimento pode ser sucinta, sem exigir o mesmo grau de profundidade de uma sentença condenatória, embora não possa ser inexistente.",article:"art. 93, IX, CF",tip:"Sucinta é permitido; ausente não é. Diferença sutil, mas cobrada com frequência."},
+{topic:"resposta",statement:"O prazo para apresentação da resposta à acusação, após a citação, é de 10 dias.",answer:true,explanation:"O art. 396 do CPP estabelece prazo de 10 dias, contado da citação, para o oferecimento da resposta à acusação por escrito.",article:"art. 396, CPP",tip:"10 dias — memorize junto com outros prazos de dez dias do processo penal para não confundir."},
+{topic:"resposta",statement:"A ausência de defesa técnica na resposta à acusação gera nulidade relativa, exigindo-se prova de prejuízo para seu reconhecimento.",answer:false,explanation:"A ausência (total) de defesa técnica gera nulidade absoluta, conforme Súmula 523 do STF. A nulidade relativa se aplica aos casos de deficiência (e não ausência) de defesa, quando se exige demonstração de prejuízo.",article:"Súmula 523, STF",tip:"Ausência total = absoluta (não precisa provar prejuízo). Deficiência = relativa (precisa provar prejuízo)."},
+{topic:"resposta",statement:"A citação por hora certa pode ser utilizada livremente pelo oficial de justiça, independentemente de suspeita de ocultação do acusado.",answer:false,explanation:"A citação por hora certa só é cabível havendo fundada suspeita de que o citando está se ocultando deliberadamente para não ser citado, após tentativas frustradas de citação pessoal.",article:"art. 362, CPP",tip:"Hora certa não é 'atalho' de conveniência — exige indício concreto de ocultação proposital."},
+{topic:"resposta",statement:"A citação por edital, quando o acusado não comparece nem constitui defensor, pode acarretar a suspensão do processo e do curso do prazo prescricional.",answer:true,explanation:"É a hipótese do art. 366 do CPP: não comparecendo o citado por edital nem constituindo advogado, suspendem-se o processo e o prazo prescricional, podendo o juiz determinar produção antecipada de provas urgentes.",article:"art. 366, CPP",tip:"Edital + não comparecimento + sem advogado = suspensão do processo e da prescrição, não extinção."},
+{topic:"absolvicao",statement:"A absolvição sumária, prevista no art. 397 do CPP, ocorre necessariamente após a instrução processual, com base na prova produzida em audiência.",answer:false,explanation:"A absolvição sumária ocorre antes da instrução, logo após a resposta à acusação, com base em elementos manifestos e prévios (excludentes evidentes, atipicidade manifesta, extinção da punibilidade). É distinta da absolvição por insuficiência de provas ao final do processo (art. 386).",article:"art. 397, CPP",tip:"Sumária = antes da instrução. Absolvição do art. 386 = depois da instrução."},
+{topic:"absolvicao",statement:"A inimputabilidade, quando reconhecida como única tese defensiva, autoriza, por si só, a absolvição sumária do acusado.",answer:false,explanation:"A inimputabilidade isolada não autoriza absolvição sumária (art. 397, parágrafo único, CPP), pois, nesse caso, a absolvição seria imprópria, com aplicação de medida de segurança, exigindo instrução prévia para apuração de materialidade e autoria.",article:"art. 397, parágrafo único, CPP",tip:"Inimputabilidade sozinha = exceção expressa que afasta a absolvição sumária."},
+{topic:"absolvicao",statement:"A extinção da punibilidade do agente é uma das hipóteses que autorizam a absolvição sumária.",answer:true,explanation:"O art. 397, IV, do CPP prevê expressamente a extinção da punibilidade (por exemplo, prescrição já consumada) como hipótese de absolvição sumária.",article:"art. 397, IV, CPP",tip:"Extinção da punibilidade manifesta dispensa toda a instrução — o processo perde seu objeto."},
+{topic:"audiencia",statement:"O interrogatório do acusado, na sistemática atual do CPP, é o primeiro ato da audiência de instrução e julgamento.",answer:false,explanation:"Desde a reforma de 2008, o interrogatório passou a ser o último ato da instrução, e não o primeiro, reforçando sua natureza de meio de defesa.",article:"art. 400, CPP",tip:"Se a alternativa disser 'interrogatório primeiro', está desatualizada — é pegadinha comum."},
+{topic:"audiencia",statement:"A ordem de oitiva das testemunhas é: primeiro as de acusação, depois as de defesa.",answer:true,explanation:"O art. 400 do CPP determina que sejam ouvidas primeiro as testemunhas arroladas pela acusação, e, em seguida, as arroladas pela defesa.",article:"art. 400, CPP",tip:"Acusação fala/produz prova primeiro; defesa reage depois — reflexo do ônus da prova."},
+{topic:"audiencia",statement:"A inversão da ordem de oitiva das testemunhas gera, segundo entendimento consolidado, nulidade absoluta automática, dispensando-se a comprovação de prejuízo.",answer:false,explanation:"O entendimento dominante é de que a inversão gera nulidade relativa, exigindo-se arguição oportuna e comprovação de prejuízo concreto (pas de nullité sans grief), e não nulidade absoluta automática.",article:"art. 400, CPP",tip:"Cuidado com alternativas que afirmam 'nulidade absoluta automática' em temas de inversão de ordem de atos — quase sempre é nulidade relativa."},
+{topic:"audiencia",statement:"Os debates orais podem ser substituídos por memoriais escritos quando a complexidade do caso ou o número de acusados justificar essa conversão.",answer:true,explanation:"O art. 403, §3º, do CPP permite a substituição dos debates orais por memoriais escritos em casos complexos ou com número elevado de acusados, concedendo-se prazo sucessivo de cinco dias para cada parte, salvo disposição diversa.",article:"art. 403, §3º, CPP",tip:"Memoriais são exceção justificada, não a regra do procedimento ordinário."},
+{topic:"prisao",statement:"A prisão preventiva pode ser decretada de ofício pelo juiz a qualquer momento do inquérito policial, sem provocação de quem quer que seja.",answer:false,explanation:"Após o Pacote Anticrime, a decretação de ofício pelo juiz durante a investigação (fase de inquérito) não é mais admitida; exige-se representação da autoridade policial ou requerimento do Ministério Público, preservando o sistema acusatório.",article:"art. 311, CPP",tip:"Fase de inquérito: sem provocação (MP ou polícia), o juiz não decreta preventiva de ofício."},
+{topic:"prisao",statement:"O art. 316, parágrafo único, do CPP impõe a revisão da necessidade da prisão preventiva a cada 90 dias, mediante decisão fundamentada.",answer:true,explanation:"É exatamente o teor do dispositivo incluído pelo Pacote Anticrime: revisão periódica obrigatória a cada 90 dias, sob pena de a omissão gerar consequências, conforme module o STF nas ADIs 6581 e 6582.",article:"art. 316, parágrafo único, CPP",tip:"90 dias é o número mais cobrado sobre prisão preventiva em provas de Processo Penal II."},
+{topic:"prisao",statement:"Segundo o STF nas ADIs 6581 e 6582, o descumprimento do prazo de revisão de 90 dias gera soltura automática e obrigatória do preso.",answer:false,explanation:"O STF afastou o automatismo: o descumprimento do prazo não solta automaticamente o preso, mas exige comunicação e decisão fundamentada do juízo competente sobre a manutenção ou não da custódia, sob pena de responsabilização funcional do magistrado omisso.",article:"ADIs 6581 e 6582, STF",tip:"Não existe 'soltura automática' nesse tema — essa é a pegadinha mais comum sobre o art. 316, parágrafo único."}
+];
+
+const CASES = [
+{topic:"denuncia",scenario:"O Ministério Público ofereceu denúncia por crime de roubo. Ao analisar a peça, o juiz verificou que não há qualquer elemento nos autos que indique, ainda que minimamente, a participação do acusado no fato, existindo apenas uma denúncia anônima sem qualquer diligência complementar.",question:"O que deve acontecer, à luz do art. 395 do CPP?",options:["O juiz deve receber a denúncia normalmente e aguardar a instrução para verificar a autoria","O juiz deve rejeitar a denúncia por ausência de justa causa, dado o lastro probatório insuficiente","O juiz deve converter o feito em diligência policial obrigatória por prazo indeterminado","O juiz deve absolver sumariamente o acusado, pois já há certeza de sua inocência"],correct:1,explanation:"A ausência de qualquer lastro probatório mínimo (justa causa) que vincule o acusado ao fato é causa de rejeição da denúncia, nos termos do art. 395, III, do CPP. Receber a denúncia nessas condições submeteria o cidadão a um processo penal infundado, violando a presunção de inocência e a própria função de filtro processual da fase de recebimento.",article:"art. 395, III, CPP",tip:"Denúncia sem lastro probatório mínimo = rejeição por ausência de justa causa, não instrução 'para ver o que aparece'."},
+{topic:"resposta",scenario:"Citado pessoalmente, o acusado não constituiu advogado e também não compareceu para apresentar resposta à acusação dentro do prazo legal.",question:"Qual a providência correta do juiz?",options:["Proferir sentença condenatória de imediato, considerando a inércia como confissão","Declarar a revelia e prosseguir sem qualquer garantia de defesa técnica","Nomear defensor dativo ou público para apresentar a resposta à acusação em novo prazo, preservando a defesa técnica obrigatória","Extinguir o processo por impossibilidade de citação"],correct:2,explanation:"A defesa técnica é indisponível. Diante da inércia do acusado em constituir advogado, o juiz deve nomear defensor (dativo ou público) para apresentar a resposta à acusação, assegurando o devido processo legal, sob pena de nulidade absoluta caso o processo prossiga sem qualquer defesa técnica.",article:"art. 396-A, §2º, CPP; Súmula 523, STF",tip:"Inércia do acusado em constituir defensor nunca dispensa a nomeação de defensor pelo juízo."},
+{topic:"absolvicao",scenario:"Após a resposta à acusação em processo por lesão corporal, ficou demonstrado documentalmente e de forma manifesta que o acusado agiu em legítima defesa, havendo prova pré-constituída e incontroversa nesse sentido, sem qualquer dúvida factual a ser dirimida em instrução.",question:"Qual a solução processual adequada nesse momento?",options:["Absolvição sumária, por existência manifesta de causa excludente de ilicitude","Prosseguimento obrigatório até a instrução completa, ainda que a prova já seja incontroversa","Extinção do processo sem julgamento de mérito, por ilegitimidade de parte","Impronúncia do acusado, aplicável a qualquer procedimento"],correct:0,explanation:"Havendo prova manifesta e incontroversa de excludente de ilicitude (legítima defesa), o juiz deve absolver sumariamente o acusado, nos termos do art. 397, I, do CPP, evitando o desgaste desnecessário de uma instrução cujo resultado já está evidenciado documentalmente.",article:"art. 397, I, CPP",tip:"'Impronúncia' é instituto do Tribunal do Júri, não se confunde com absolvição sumária do rito ordinário comum."},
+{topic:"audiencia",scenario:"Durante a audiência de instrução, por erro da secretaria, as testemunhas de defesa foram ouvidas antes das testemunhas de acusação. A defesa não se manifestou sobre isso na própria audiência, apenas suscitando a nulidade dois meses depois, em sede de alegações finais, sem apontar qualquer prejuízo concreto.",question:"Qual a consequência processual mais provável, à luz da jurisprudência dominante?",options:["Nulidade absoluta automática, anulando-se toda a instrução independentemente de qualquer análise adicional","Preclusão do direito de arguir a nulidade, por se tratar de nulidade relativa não arguida no momento oportuno e sem demonstração de prejuízo","Extinção da punibilidade do acusado, como sanção ao erro da secretaria","Impedimento do juiz para julgar o feito, com necessidade de redistribuição"],correct:1,explanation:"A inversão da ordem de testemunhas é nulidade relativa. Isso exige arguição no momento oportuno (a defesa deveria ter se manifestado na própria audiência) e comprovação de prejuízo concreto, sob pena de preclusão. A arguição tardia e genérica, sem apontar prejuízo, tende a ser rejeitada pelos tribunais.",article:"art. 400, CPP; pas de nullité sans grief","stf":true,tip:"Nulidade relativa arguida fora de hora e sem prejuízo demonstrado = preclusão. Guarde esse raciocínio para questões de nulidade em geral."},
+{topic:"prisao",scenario:"Um acusado está preso preventivamente há 150 dias, sem que o juízo tenha realizado a revisão prevista no art. 316, parágrafo único, do CPP no prazo de 90 dias. A defesa impetra habeas corpus pleiteando soltura imediata e automática, unicamente com base no descumprimento do prazo.",question:"Com base no entendimento do STF nas ADIs 6581 e 6582, qual a resposta mais consistente?",options:["A soltura é automática e obrigatória, bastando o descumprimento do prazo, sem qualquer outra análise","O descumprimento do prazo não gera soltura automática; cabe determinar que o juízo seja comunicado para proferir decisão fundamentada sobre a manutenção ou não da prisão, podendo haver responsabilização funcional pela omissão","O habeas corpus deve ser negado integralmente, pois o prazo de revisão é meramente sugestivo e sem qualquer consequência","A prisão deve ser convertida automaticamente em prisão domiciliar, independentemente de decisão judicial"],correct:1,explanation:"Segundo o entendimento fixado pelo STF nas ADIs 6581 e 6582, o descumprimento do prazo de revisão de 90 dias não gera soltura automática, para evitar um automatismo que poderia colocar em risco a ordem pública em casos concretos. A providência adequada é determinar a comunicação ao juízo para que profira decisão fundamentada e célere sobre a manutenção ou revogação da prisão, sem prejuízo de eventual responsabilização do magistrado omisso.",article:"art. 316, parágrafo único, CPP; ADIs 6581 e 6582, STF",tip:"Automatismo de soltura é a resposta errada mais tentadora nesse tema — o STF expressamente o rejeitou."},
+{topic:"denuncia",scenario:"O Ministério Público ofereceu denúncia descrevendo genericamente que 'o acusado, em datas não identificadas, cometeu diversos crimes de furto', sem especificar qualquer circunstância de tempo, lugar ou modo de execução, tampouco individualizando as condutas.",question:"Como deve se posicionar o juiz diante dessa denúncia?",options:["Recebê-la normalmente, pois furto é crime de menor gravidade e dispensa detalhamento","Rejeitá-la por inépcia, já que não descreve adequadamente o fato criminoso com suas circunstâncias, violando o art. 41 do CPP e prejudicando o exercício da ampla defesa","Determinar o arquivamento definitivo do inquérito, extinguindo a punibilidade","Converter o feito em procedimento sumaríssimo automaticamente"],correct:1,explanation:"A denúncia genérica, sem descrição das circunstâncias de tempo, lugar e modo do fato criminoso, viola o art. 41 do CPP e compromete o exercício da ampla defesa, pois o acusado não consegue identificar exatamente do que está sendo acusado. Trata-se de hipótese de inépcia, ensejando rejeição da denúncia (art. 395, I, CPP).",article:"arts. 41 e 395, I, CPP",tip:"Denúncia genérica ('cometeu vários crimes em datas incertas') é clássico exemplo de inépcia cobrado em provas."},
+{topic:"resposta",scenario:"O acusado foi citado por edital, não constituiu advogado e não compareceu a qualquer ato do processo.",question:"Qual a providência determinada pelo art. 366 do CPP nessa hipótese?",options:["O processo prossegue normalmente à revelia, sem qualquer suspensão","O processo e o curso da prescrição ficam suspensos, podendo o juiz determinar a produção antecipada de provas urgentes","O juiz deve absolver sumariamente o acusado","A denúncia deve ser automaticamente rejeitada"],correct:1,explanation:"Nos termos do art. 366 do CPP, o não comparecimento do citado por edital, sem constituição de advogado, suspende o processo e o curso do prazo prescricional, autorizando o juiz a determinar a produção antecipada de provas consideradas urgentes, para preservar seu valor probatório para o futuro.",article:"art. 366, CPP",tip:"A suspensão do art. 366 é conjunta: processo E prescrição, não apenas um dos dois."},
+{topic:"audiencia",scenario:"Encerrada toda a instrução em audiência complexa, envolvendo cinco corréus e extenso conjunto probatório, o juiz entendeu ser inviável a realização de debates orais no mesmo ato, sem prejuízo à qualidade da defesa técnica.",question:"Qual solução o CPP autoriza nessa hipótese?",options:["Determinar o arquivamento do processo por impossibilidade prática","Substituir os debates orais por memoriais escritos, com prazo sucessivo para acusação e defesa","Proferir sentença sem qualquer manifestação final das partes","Anular todo o processo e reiniciar a instrução"],correct:1,explanation:"O art. 403, §3º, do CPP autoriza, em casos complexos ou com número elevado de acusados, a substituição dos debates orais por memoriais escritos, concedendo-se prazo sucessivo (geralmente de 5 dias) para cada parte apresentar suas razões finais por escrito.",article:"art. 403, §3º, CPP",tip:"Memoriais escritos = válvula de escape processual para casos complexos, não é discricionariedade livre e sem motivo."},
+{topic:"absolvicao",scenario:"Em processo por furto, a única tese apresentada na resposta à acusação foi a de que o acusado, à época do fato, era inimputável por doença mental, havendo apenas um laudo particular ainda não submetido a contraditório pericial oficial.",question:"O juiz pode absolver sumariamente o acusado nesse momento processual?",options:["Sim, pois a inimputabilidade sempre autoriza absolvição sumária imediata","Não, pois a inimputabilidade isoladamente alegada não autoriza absolvição sumária, sendo necessária instrução para apurar materialidade, autoria e, se for o caso, aplicar medida de segurança ao final","Sim, mas apenas se o laudo for público","Não, porque furto nunca admite absolvição sumária, independentemente do fundamento"],correct:1,explanation:"O art. 397, parágrafo único, do CPP veda expressamente a absolvição sumária quando a inimputabilidade for a única tese defensiva, justamente porque, nesse caso, a absolvição seria imprópria (com aplicação de medida de segurança), o que pressupõe instrução prévia para comprovação da materialidade e autoria do fato.",article:"art. 397, parágrafo único, CPP",tip:"Sempre que a questão citar 'única tese é inimputabilidade', a resposta tende a ser: instrução obrigatória, sem absolvição sumária."},
+{topic:"fundamentos",scenario:"Em determinado processo, o juiz da fase de investigação, que já havia analisado profundamente os elementos do inquérito e decretado medidas cautelares diversas, foi mantido como o mesmo juiz responsável pela instrução e pela prolação da sentença.",question:"Sob a ótica do modelo do juiz das garantias, esse arranjo é adequado?",options:["Sim, pois quanto mais familiarizado o juiz estiver com o caso, melhor a qualidade da sentença","Não, pois o modelo do juiz das garantias busca justamente separar quem atua na investigação de quem conduz a instrução e julga, para preservar a imparcialidade objetiva do julgador","Sim, desde que o juiz declare, verbalmente, que é imparcial","Não, mas apenas em crimes de menor potencial ofensivo, sendo indiferente nos demais casos"],correct:1,explanation:"O modelo do juiz das garantias foi criado exatamente para evitar que o juiz que teve contato aprofundado com os elementos da investigação e decretou medidas cautelares seja o mesmo a conduzir a instrução e proferir a sentença, preservando a imparcialidade objetiva e a confiança do jurisdicionado no sistema de justiça.",article:"art. 3º-B e seguintes, CPP",tip:"A separação de funções é o núcleo do juiz das garantias — não é sobre 'conhecer bem o caso', é sobre preservar a imparcialidade."},
+{topic:"prisao",scenario:"O Ministério Público requer prisão preventiva alegando apenas, de forma genérica, que o crime é grave e que 'a sociedade clama por justiça', sem apontar qualquer elemento concreto de risco à ordem pública, à instrução criminal ou à aplicação da lei penal.",question:"O juiz pode decretar a prisão preventiva com base nesses argumentos?",options:["Sim, pois a gravidade abstrata do crime já basta para a decretação da preventiva","Não, pois a decretação de prisão preventiva exige fundamentação concreta quanto ao periculum libertatis, não bastando a gravidade abstrata do delito ou apelos genéricos à clamor social","Sim, desde que o crime seja hediondo","Não, porque a prisão preventiva foi extinta do ordenamento jurídico brasileiro"],correct:1,explanation:"A jurisprudência é pacífica ao vedar a decretação de prisão preventiva com base exclusivamente na gravidade abstrata do delito ou em apelos de clamor público, exigindo-se fundamentação concreta e individualizada quanto ao risco efetivo à ordem pública, à instrução criminal ou à aplicação da lei penal, sob pena de a medida configurar antecipação de pena.",article:"art. 312, CPP",tip:"Gravidade abstrata do crime, isoladamente, nunca fundamenta preventiva — é entendimento pacificado e muito cobrado."}
+];
+
+const SEQUENCE = [
+{topic:"denuncia",prompt:"Após o oferecimento da denúncia pelo Ministério Público, o próximo ato processual, em regra, é:",options:["A análise judicial para recebimento ou rejeição da peça acusatória","O interrogatório imediato do acusado","A audiência de instrução e julgamento","A sentença condenatória"],correct:0,explanation:"Oferecida a denúncia, cabe ao juiz analisá-la, verificando os requisitos do art. 41 e as hipóteses de rejeição do art. 395, ambos do CPP, para então recebê-la ou rejeitá-la.",article:"arts. 396 e 395, CPP"},
+{topic:"denuncia",prompt:"Recebida a denúncia, o próximo ato processual é:",options:["A citação do acusado para apresentar resposta à acusação em 10 dias","A audiência de instrução e julgamento diretamente","A sentença","A citação por edital, obrigatoriamente, independentemente do caso"],correct:0,explanation:"O recebimento da denúncia é seguido da determinação de citação do acusado para responder à acusação por escrito, no prazo de 10 dias (art. 396, CPP).",article:"art. 396, CPP"},
+{topic:"resposta",prompt:"Apresentada a resposta à acusação, e não sendo caso de absolvição sumária, o próximo ato é:",options:["A designação da audiência de instrução e julgamento","O arquivamento automático do processo","Nova citação do acusado","O trânsito em julgado imediato"],correct:0,explanation:"Não havendo absolvição sumária (art. 397, CPP), o juiz designa a audiência de instrução e julgamento, na qual serão produzidas as provas orais.",article:"art. 399, CPP"},
+{topic:"audiencia",prompt:"Na audiência de instrução e julgamento, após ouvido o ofendido, o próximo ato é:",options:["A oitiva das testemunhas de acusação","O interrogatório do réu","A sentença","As alegações finais"],correct:0,explanation:"A ordem legal do art. 400 do CPP prevê, após as declarações do ofendido, a oitiva das testemunhas arroladas pela acusação.",article:"art. 400, CPP"},
+{topic:"audiencia",prompt:"Após a oitiva das testemunhas de acusação, segue-se, na audiência:",options:["A oitiva das testemunhas de defesa","O interrogatório do réu, imediatamente","A leitura da sentença","O recesso definitivo do processo"],correct:0,explanation:"Depois das testemunhas de acusação, ouvem-se as testemunhas arroladas pela defesa, conforme a ordem do art. 400 do CPP.",article:"art. 400, CPP"},
+{topic:"audiencia",prompt:"Concluída toda a produção de provas orais e periciais, o último ato da instrução propriamente dita é:",options:["O interrogatório do acusado","A oitiva do ofendido","O oferecimento da denúncia","A resposta à acusação"],correct:0,explanation:"Desde a reforma de 2008, o interrogatório do acusado passou a ser o último ato da instrução, reforçando sua função de meio de defesa.",article:"art. 400, CPP"},
+{topic:"audiencia",prompt:"Após o interrogatório do acusado, encerrando a instrução, seguem-se, em regra:",options:["Os debates orais (alegações finais) das partes","Nova citação do acusado","O oferecimento de nova denúncia","O arquivamento do inquérito"],correct:0,explanation:"Encerrada a instrução com o interrogatório, seguem-se os debates orais, nos quais acusação e defesa apresentam suas alegações finais.",article:"art. 403, CPP"},
+{topic:"audiencia",prompt:"Concluídos os debates orais (ou apresentados os memoriais, quando cabíveis), o próximo e último ato do procedimento comum ordinário é:",options:["A sentença","Nova resposta à acusação","A citação por edital","A absolvição sumária"],correct:0,explanation:"Encerrados os debates ou apresentados os memoriais, o juiz profere sentença, encerrando o procedimento comum ordinário em primeiro grau.",article:"art. 403 e 404, CPP"},
+{topic:"prisao",prompt:"Decretada a prisão preventiva, o próximo controle temporal obrigatório que a lei impõe ao juízo é:",options:["A revisão da necessidade da prisão a cada 90 dias","A soltura automática após 30 dias","A conversão automática em prisão domiciliar após 15 dias","O relaxamento automático após 10 dias"],correct:0,explanation:"O art. 316, parágrafo único, do CPP determina a revisão periódica, a cada 90 dias, da necessidade de manutenção da prisão preventiva, mediante decisão fundamentada.",article:"art. 316, parágrafo único, CPP"},
+{topic:"absolvicao",prompt:"Se, na resposta à acusação, a defesa demonstrar manifestamente causa excludente de ilicitude, o ato processual esperado, antes da instrução, é:",options:["A absolvição sumária do acusado","A designação de audiência de instrução normalmente","A rejeição da denúncia, já que a ação nunca deveria ter sido recebida","A citação por edital"],correct:0,explanation:"Comprovada de plano e manifestamente uma excludente de ilicitude, o juiz deve absolver sumariamente o acusado (art. 397, I, CPP), sem necessidade de instrução.",article:"art. 397, I, CPP"}
+];
+
+const ORDERING = [
+{title:"Do inquérito à sentença: monte a ordem cronológica completa do rito ordinário",
+ steps:["Inquérito policial","Oferecimento da denúncia pelo Ministério Público","Recebimento da denúncia pelo juiz","Citação do acusado","Resposta à acusação (10 dias)","Audiência de instrução e julgamento","Alegações finais (debates ou memoriais)","Sentença"],
+ explanation:"Essa é a sequência-mãe do procedimento comum ordinário: investigação preliminar, provocação da jurisdição (denúncia), filtro judicial (recebimento), formação do contraditório (citação e resposta), instrução probatória em audiência, manifestações finais das partes e, por fim, o provimento jurisdicional (sentença)."},
+{title:"Ordene os atos dentro da própria audiência de instrução e julgamento",
+ steps:["Declarações do ofendido","Oitiva das testemunhas de acusação","Oitiva das testemunhas de defesa","Esclarecimentos de peritos e acareações","Interrogatório do acusado","Debates orais (alegações finais)"],
+ explanation:"O art. 400 do CPP fixa exatamente essa ordem interna da audiência, culminando no interrogatório do acusado como último ato de instrução, seguido dos debates orais."},
+{title:"Ordene as etapas da análise da denúncia oferecida pelo Ministério Público",
+ steps:["Oferecimento da denúncia","Verificação dos requisitos do art. 41 do CPP","Verificação das hipóteses de rejeição do art. 395 do CPP","Recebimento ou rejeição fundamentada","Se recebida: citação do acusado"],
+ explanation:"O juiz, ao receber a denúncia, percorre esse raciocínio: confere os requisitos formais (art. 41), afasta as hipóteses de rejeição (art. 395) e só então recebe (ou rejeita) a peça, dando seguimento com a citação em caso de recebimento."},
+{title:"Ordene a linha do tempo de uma citação por edital com revelia",
+ steps:["Tentativas frustradas de citação pessoal","Citação por edital","Não comparecimento do acusado nem constituição de advogado","Suspensão do processo e do prazo prescricional (art. 366, CPP)","Possível produção antecipada de provas urgentes"],
+ explanation:"É a sequência típica do art. 366 do CPP: esgotadas as tentativas de citação pessoal, cita-se por edital; se o acusado permanecer inerte, suspende-se o processo e a prescrição, podendo o juiz antecipar provas urgentes para preservá-las."},
+{title:"Ordene as fases de controle da prisão preventiva ao longo do processo",
+ steps:["Decretação fundamentada da prisão preventiva (art. 312, CPP)","Comunicação e possibilidade de impugnação por habeas corpus","Revisão obrigatória da necessidade da prisão a cada 90 dias (art. 316, par. único)","Nova decisão fundamentada mantendo ou revogando a prisão"],
+ explanation:"A prisão preventiva não é estática: após decretada, submete-se a controle recursal e, principalmente, à revisão periódica obrigatória a cada 90 dias, com nova decisão fundamentada a cada ciclo."},
+{title:"Ordene o caminho processual após a resposta à acusação",
+ steps:["Apresentação da resposta à acusação","Análise do juiz sobre hipóteses de absolvição sumária (art. 397, CPP)","Se não houver absolvição sumária: designação de audiência de instrução e julgamento","Realização da audiência com produção de provas","Sentença"],
+ explanation:"Apresentada a resposta, o juiz primeiro verifica se é caso de absolvição sumária; não sendo, prossegue-se rumo à audiência de instrução e, ao final, à sentença."},
+{title:"Ordene as etapas de formação da relação processual (contraditório inicial)",
+ steps:["Recebimento da denúncia","Determinação de citação do acusado","Citação (pessoal, por hora certa ou por edital)","Contagem do prazo de 10 dias","Apresentação da resposta à acusação"],
+ explanation:"É a sequência que instaura formalmente o contraditório: recebida a denúncia, o juiz determina a citação, que se aperfeiçoa em uma das modalidades legais, iniciando a contagem do prazo de resposta."},
+{title:"Ordene o raciocínio sobre imparcialidade entre juiz das garantias e juiz da instrução",
+ steps:["Investigação criminal sob controle do juiz das garantias","Oferecimento da denúncia","Recebimento da denúncia (encerra a atuação do juiz das garantias)","Distribuição/atuação do juiz da instrução e julgamento","Condução da instrução e prolação da sentença"],
+ explanation:"O modelo do juiz das garantias delimita claramente o momento da troca de julgador: até o recebimento da denúncia, atua o juiz das garantias; a partir daí, assume o juiz da instrução, que conduzirá o processo até a sentença, preservando a imparcialidade objetiva."}
+];
+
+/* =========================================================
+   2. ESTADO GLOBAL / ENGINE
+   ========================================================= */
+const state = {
+  mode:null, queue:[], index:0, score:0, streak:0, bestStreak:0,
+  correctCount:0, wrongCount:0, startTime:0, timerInterval:null,
+  livesLeft:3, blitzSeconds:30, byTopic:{}, currentQ:null,
+  usedIds:{mc:new Set(),tf:new Set(),cases:new Set(),sequence:new Set(),ordering:new Set()},
+  soundOn:true, orderCurrent:null, orderArr:[], orderChecked:false
+};
+
+function loadPersisted(){
+  try{
+    const s = localStorage.getItem('ppq_sound');
+    state.soundOn = s===null ? true : s==='1';
+  }catch(e){}
+}
+loadPersisted();
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function pickQuestions(bank,setKey,n){
+  const all = bank.map((q,i)=>({...q,__id:setKey+i}));
+  let available = all.filter(q=>!state.usedIds[setKey].has(q.__id));
+  if(available.length < n){ state.usedIds[setKey].clear(); available = all; }
+  const chosen = shuffle(available).slice(0,n);
+  chosen.forEach(q=>state.usedIds[setKey].add(q.__id));
+  return chosen;
+}
+
+function trackTopic(topic,correct){
+  if(!state.byTopic[topic]) state.byTopic[topic]={hit:0,miss:0};
+  if(correct) state.byTopic[topic].hit++; else state.byTopic[topic].miss++;
+  try{
+    const g = JSON.parse(localStorage.getItem('ppq_global_topics')||'{}');
+    if(!g[topic]) g[topic]={hit:0,miss:0};
+    if(correct) g[topic].hit++; else g[topic].miss++;
+    localStorage.setItem('ppq_global_topics', JSON.stringify(g));
+  }catch(e){}
+}
+
+/* =========================================================
+   3. SOM (Web Audio API — sem arquivos externos)
+   ========================================================= */
+let audioCtx=null;
+function beep(freq,dur,type){
+  if(!state.soundOn) return;
+  try{
+    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type||'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(.08, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime+dur);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime+dur);
+  }catch(e){}
+}
+function soundCorrect(){ beep(880,.12,'sine'); setTimeout(()=>beep(1180,.15,'sine'),90); }
+function soundWrong(){ beep(180,.25,'sawtooth'); }
+function soundClick(){ beep(500,.05,'square'); }
+
+/* =========================================================
+   4. UI — NAVEGAÇÃO ENTRE TELAS
+   ========================================================= */
+const screens = ['home','game','order','results','ranking','stats'];
+function showScreen(name){
+  screens.forEach(s=>document.getElementById('screen-'+s).classList.toggle('active', s===name));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.getElementById('homeBtn').addEventListener('click',()=>{ stopTimer(); showScreen('home'); });
+document.getElementById('rankingBtn').addEventListener('click', renderRanking);
+document.getElementById('rankBackBtn').addEventListener('click', ()=>showScreen('home'));
+document.getElementById('statsBtn').addEventListener('click', renderGlobalStats);
+document.getElementById('statsBackBtn').addEventListener('click', ()=>showScreen('home'));
+
+const soundBtn = document.getElementById('soundToggle');
+function refreshSoundBtn(){
+  soundBtn.textContent = state.soundOn ? '🔊' : '🔇';
+  soundBtn.classList.toggle('active', state.soundOn);
+}
+refreshSoundBtn();
+soundBtn.addEventListener('click',()=>{
+  state.soundOn = !state.soundOn;
+  try{ localStorage.setItem('ppq_sound', state.soundOn?'1':'0'); }catch(e){}
+  refreshSoundBtn();
+  if(state.soundOn) soundClick();
+});
+
+/* =========================================================
+   5. MODOS DE JOGO — CARDS NA HOME
+   ========================================================= */
+const MODES = [
+  {id:'quiz', tag:'Modo 01', title:'Quiz tradicional', desc:'Múltipla escolha com justificativa completa em cada resposta.', qty:MC.length+' questões'},
+  {id:'tf', tag:'Modo 02', title:'Verdadeiro ou falso', desc:'Afirmações jurídicas para julgar e entender o porquê.', qty:TF.length+' afirmações'},
+  {id:'sequence', tag:'Modo 03', title:'Complete a sequência', desc:'Qual o próximo ato processual? Treine a lógica do rito.', qty:SEQUENCE.length+' cenas'},
+  {id:'order', tag:'Modo 04', title:'Ordem dos atos', desc:'Reorganize a sequência processual correta, passo a passo.', qty:ORDERING.length+' exercícios'},
+  {id:'cases', tag:'Modo 05', title:'Caso prático', desc:'Pequenos casos concretos para aplicar a teoria à prática.', qty:CASES.length+' casos'},
+  {id:'blitz', tag:'Modo 06', title:'Desafio relâmpago', desc:'30 segundos no cronômetro. Quantas você resolve?', qty:'tempo real'},
+  {id:'survival', tag:'Modo 07', title:'Modo sobrevivência', desc:'3 vidas. Um erro a mais e o processo se encerra.', qty:'3 vidas'}
+];
+
+const modesGrid = document.getElementById('modesGrid');
+MODES.forEach(m=>{
+  const btn = document.createElement('button');
+  btn.className = 'mode-card';
+  btn.innerHTML = `<span class="tag">${m.tag}</span><h3>${m.title}</h3><p>${m.desc}</p><span class="qty">${m.qty}</span>`;
+  btn.addEventListener('click', ()=>{ soundClick(); startMode(m.id); });
+  modesGrid.appendChild(btn);
+});
+
+/* =========================================================
+   6. INÍCIO DE PARTIDA
+   ========================================================= */
+function resetSessionState(){
+  state.score=0; state.streak=0; state.bestStreak=0; state.correctCount=0; state.wrongCount=0;
+  state.byTopic={}; state.startTime=Date.now(); state.livesLeft=3; state.blitzSeconds=30;
+}
+
+function startMode(modeId){
+  resetSessionState();
+  state.mode = modeId;
+  document.getElementById('hLivesWrap').style.display = modeId==='survival' ? 'flex' : 'none';
+  document.getElementById('hTimerWrap').style.display = modeId==='blitz' ? 'flex' : 'none';
+  document.getElementById('hProgWrap').style.display = (modeId==='blitz'||modeId==='survival') ? 'none' : 'flex';
+
+  if(modeId==='order'){ startOrderMode(); return; }
+
+  let n = 10;
+  if(modeId==='quiz') state.queue = pickQuestions(MC,'mc',n).map(q=>({...q,__type:'mc'}));
+  else if(modeId==='tf') state.queue = pickQuestions(TF,'tf',n).map(q=>({...q,__type:'tf'}));
+  else if(modeId==='sequence') state.queue = pickQuestions(SEQUENCE,'sequence',Math.min(n,SEQUENCE.length)).map(q=>({...q,__type:'sequence'}));
+  else if(modeId==='cases') state.queue = pickQuestions(CASES,'cases',Math.min(n,CASES.length)).map(q=>({...q,__type:'case'}));
+  else if(modeId==='blitz' || modeId==='survival'){
+    const mixed = [
+      ...pickQuestions(MC,'mc',30).map(q=>({...q,__type:'mc'})),
+      ...pickQuestions(TF,'tf',20).map(q=>({...q,__type:'tf'})),
+      ...pickQuestions(CASES,'cases',10).map(q=>({...q,__type:'case'})),
+      ...pickQuestions(SEQUENCE,'sequence',10).map(q=>({...q,__type:'sequence'}))
+    ];
+    state.queue = shuffle(mixed);
+  }
+
+  state.index = 0;
+  document.getElementById('modeLabel').textContent = 'Autos nº '+(1000+Math.floor(Math.random()*8999))+'/2026 — '+labelForMode(modeId);
+  updateHeaderStats();
+  buildProgressMini();
+  showScreen('game');
+
+  if(modeId==='blitz') startBlitzTimer();
+  loadQuestion();
+}
+
+function labelForMode(id){
+  return {quiz:'Quiz tradicional',tf:'Verdadeiro ou falso',sequence:'Complete a sequência',cases:'Caso prático',blitz:'Desafio relâmpago',survival:'Modo sobrevivência'}[id]||'';
+}
+
+function buildProgressMini(){
+  const wrap = document.getElementById('progressMini');
+  wrap.innerHTML='';
+  if(state.mode==='blitz'||state.mode==='survival') return;
+  state.queue.forEach((_,i)=>{
+    const s=document.createElement('span');
+    if(i===state.index) s.classList.add('cur');
+    wrap.appendChild(s);
+  });
+}
+function markProgressMini(idx,correct){
+  const wrap = document.getElementById('progressMini');
+  const spans = wrap.children;
+  if(spans[idx]){ spans[idx].classList.remove('cur'); spans[idx].classList.add(correct?'hit':'miss'); }
+  if(spans[idx+1]) spans[idx+1].classList.add('cur');
+}
+
+function updateHeaderStats(){
+  document.getElementById('hScore').textContent = state.score;
+  document.getElementById('hStreak').textContent = state.streak;
+  document.getElementById('hProg').textContent = (state.index+1)+'/'+state.queue.length;
+  if(state.mode==='survival'){
+    document.getElementById('hLives').textContent = '❤'.repeat(state.livesLeft)+'<span class="life lost">❤</span>'.repeat(0);
+    let hearts='';
+    for(let i=0;i<3;i++) hearts += i<state.livesLeft ? '❤' : '<span class="life lost">❤</span>';
+    document.getElementById('hLives').innerHTML = hearts;
+  }
+}
+
+/* =========================================================
+   7. TIMER (Desafio relâmpago)
+   ========================================================= */
+function startBlitzTimer(){
+  stopTimer();
+  state.blitzSeconds = 30;
+  document.getElementById('hTimer').textContent = state.blitzSeconds;
+  updateDeadlineBar();
+  state.timerInterval = setInterval(()=>{
+    state.blitzSeconds--;
+    document.getElementById('hTimer').textContent = Math.max(state.blitzSeconds,0);
+    updateDeadlineBar();
+    if(state.blitzSeconds<=0){ stopTimer(); finishGame(); }
+  },1000);
+}
+function updateDeadlineBar(){
+  const pct = Math.max(0,(state.blitzSeconds/30)*100);
+  const fill = document.getElementById('deadlineFill');
+  fill.style.width = pct+'%';
+  fill.classList.toggle('urgent', state.blitzSeconds<=10);
+}
+function stopTimer(){ if(state.timerInterval){ clearInterval(state.timerInterval); state.timerInterval=null; } }
+
+/* =========================================================
+   8. CARREGAR E RESPONDER QUESTÃO
+   ========================================================= */
+function loadQuestion(){
+  if(state.mode!=='blitz' && state.index>=state.queue.length){ finishGame(); return; }
+  if(state.mode==='blitz' && state.queue.length - state.index < 3){
+    const extra = [
+      ...pickQuestions(MC,'mc',15).map(q=>({...q,__type:'mc'})),
+      ...pickQuestions(TF,'tf',10).map(q=>({...q,__type:'tf'}))
+    ];
+    state.queue = state.queue.concat(shuffle(extra));
+  }
+  const q = state.queue[state.index];
+  state.currentQ = q;
+  document.getElementById('nextBtn').style.display='none';
+  document.getElementById('feedbackPanel').classList.remove('show');
+  document.getElementById('topicChip').textContent = TOPICS[q.topic]||'Tema geral';
+  const diffMap={facil:'Fácil',intermediaria:'Intermediária',dificil:'Difícil'};
+  const diffChip = document.getElementById('diffChip');
+  if(q.difficulty){
+    diffChip.style.display='inline-block';
+    diffChip.textContent = diffMap[q.difficulty];
+    diffChip.className = 'difficulty diff-'+q.difficulty;
+  } else { diffChip.style.display='none'; }
+
+  const scenarioBox = document.getElementById('scenarioBox');
+  if(q.__type==='case'){ scenarioBox.style.display='block'; scenarioBox.textContent = q.scenario; }
+  else { scenarioBox.style.display='none'; }
+
+  const qtext = document.getElementById('questionText');
+  const optsWrap = document.getElementById('optionsWrap');
+  const tfWrap = document.getElementById('tfWrap');
+  optsWrap.innerHTML=''; optsWrap.style.display='none'; tfWrap.style.display='none';
+
+  if(q.__type==='tf'){
+    qtext.textContent = q.statement;
+    tfWrap.style.display='flex';
+    [...tfWrap.children].forEach(btn=>{
+      btn.classList.remove('correct','wrong','locked');
+      btn.onclick = ()=>answerTF(btn.dataset.v==='true');
+    });
+  } else {
+    qtext.textContent = q.question || q.prompt;
+    optsWrap.style.display='flex';
+    const letters=['A','B','C','D'];
+    q.options.forEach((opt,i)=>{
+      const div = document.createElement('button');
+      div.className='opt';
+      div.innerHTML = `<span class="letter">${letters[i]}</span><span>${opt}</span>`;
+      div.onclick = ()=>answerMC(i);
+      optsWrap.appendChild(div);
+    });
+  }
+  updateHeaderStats();
+  if(state.mode!=='blitz' && state.mode!=='survival') buildProgressMini(), markCurrentMini();
+}
+function markCurrentMini(){
+  const wrap = document.getElementById('progressMini');
+  [...wrap.children].forEach((s,i)=>{ if(i===state.index) s.classList.add('cur'); });
+}
+
+function lockOptions(){
+  [...document.getElementById('optionsWrap').children].forEach(el=>{ el.classList.add('locked'); el.onclick=null; });
+  [...document.getElementById('tfWrap').children].forEach(el=>{ el.classList.add('locked'); el.onclick=null; });
+}
+
+function answerMC(i){
+  const q = state.currentQ;
+  const correct = i===q.correct;
+  lockOptions();
+  const opts = document.getElementById('optionsWrap').children;
+  opts[i].classList.add(correct?'correct':'wrong');
+  if(!correct) opts[q.correct].classList.add('correct');
+  resolveAnswer(correct, q);
+}
+function answerTF(v){
+  const q = state.currentQ;
+  const correct = v===q.answer;
+  lockOptions();
+  const btns = document.getElementById('tfWrap').children;
+  const clicked = v?btns[0]:btns[1];
+  clicked.classList.add(correct?'correct':'wrong');
+  if(!correct){ (v?btns[1]:btns[0]).classList.add('correct'); }
+  else { /* also show correct highlight on the true answer side already done */ }
+  if(!correct){ (q.answer?btns[0]:btns[1]).classList.add('correct'); }
+  resolveAnswer(correct, q);
+}
+
+function resolveAnswer(correct, q){
+  if(correct){
+    state.correctCount++; state.streak++; state.bestStreak=Math.max(state.bestStreak,state.streak);
+    let pts=10;
+    if(state.streak===3) pts+=5;
+    if(state.streak>=5 && state.streak%5===0) pts+=15;
+    state.score+=pts;
+    soundCorrect();
+  } else {
+    state.wrongCount++; state.streak=0;
+    if(state.mode==='survival') state.livesLeft--;
+    soundWrong();
+  }
+  trackTopic(q.topic, correct);
+  if(state.mode!=='blitz' && state.mode!=='survival') markProgressMini(state.index, correct);
+  showFeedback(correct, q);
+  updateHeaderStats();
+
+  if(state.mode==='survival' && state.livesLeft<=0){
+    setTimeout(()=>{ finishGame(); }, 1400);
+    return;
+  }
+}
+
+function showFeedback(correct,q){
+  const panel = document.getElementById('feedbackPanel');
+  const stamp = document.getElementById('stampEl');
+  stamp.textContent = correct ? 'Correto' : 'Incorreto';
+  stamp.className = 'stamp'+(correct?'':' wrong');
+  document.getElementById('explainText').textContent = q.explanation;
+  const artPill = document.getElementById('articlePill');
+  if(q.article){ artPill.style.display='inline-flex'; artPill.textContent='§ '+q.article; } else { artPill.style.display='none'; }
+  const stfBox = document.getElementById('stfBox');
+  if(q.stf===true){ stfBox.style.display='block'; stfBox.innerHTML='<strong>Entendimento jurisprudencial:</strong> aplicado nesta questão, conforme fundamentação acima.'; }
+  else { stfBox.style.display='none'; }
+  const tipBox = document.getElementById('tipBox');
+  if(q.tip){ tipBox.style.display='block'; tipBox.innerHTML='<strong>Dica de memorização:</strong> '+q.tip; } else { tipBox.style.display='none'; }
+  panel.classList.add('show');
+  document.getElementById('nextBtn').style.display = (state.mode==='survival' && state.livesLeft<=0) ? 'none' : 'flex';
+}
+
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  soundClick();
+  state.index++;
+  loadQuestion();
+});
+
+/* =========================================================
+   9. MODO ORDENAÇÃO (drag/botões)
+   ========================================================= */
+let orderQueue=[], orderIndex=0;
+function startOrderMode(){
+  orderQueue = shuffle(ORDERING);
+  orderIndex = 0;
+  showScreen('order');
+  loadOrderExercise();
+}
+function loadOrderExercise(){
+  document.getElementById('orderFeedback').classList.remove('show');
+  document.getElementById('orderCheckBtn').style.display='inline-flex';
+  document.getElementById('orderNextBtn').style.display='none';
+  document.getElementById('oProg').textContent=(orderIndex+1)+'/'+orderQueue.length;
+  const ex = orderQueue[orderIndex];
+  document.getElementById('orderTitle').textContent = ex.title;
+  state.orderArr = shuffle(ex.steps.map((s,i)=>({text:s,correctPos:i})));
+  state.orderChecked=false;
+  renderOrderList();
+}
+function renderOrderList(){
+  const list = document.getElementById('orderList');
+  list.innerHTML='';
+  state.orderArr.forEach((item,idx)=>{
+    const li=document.createElement('li');
+    li.className='order-item';
+    li.innerHTML = `<span class="pos">${idx+1}</span><span class="txt">${item.text}</span>
+      <span class="arrows">
+        <button data-dir="up" ${idx===0?'disabled':''}>↑</button>
+        <button data-dir="down" ${idx===state.orderArr.length-1?'disabled':''}>↓</button>
+      </span>`;
+    const [up,down] = li.querySelectorAll('button');
+    up.onclick=()=>{ moveOrderItem(idx,-1); };
+    down.onclick=()=>{ moveOrderItem(idx,1); };
+    list.appendChild(li);
+  });
+}
+function moveOrderItem(idx,dir){
+  if(state.orderChecked) return;
+  const newIdx = idx+dir;
+  if(newIdx<0||newIdx>=state.orderArr.length) return;
+  [state.orderArr[idx],state.orderArr[newIdx]] = [state.orderArr[newIdx],state.orderArr[idx]];
+  soundClick();
+  renderOrderList();
+}
+document.getElementById('orderCheckBtn').addEventListener('click',()=>{
+  state.orderChecked=true;
+  const ex = orderQueue[orderIndex];
+  let allCorrect=true;
+  const items = document.querySelectorAll('#orderList .order-item');
+  state.orderArr.forEach((item,idx)=>{
+    const ok = item.correctPos===idx;
+    if(!ok) allCorrect=false;
+    items[idx].classList.add(ok?'correct-pos':'wrong-pos');
+  });
+  trackTopic(ex.topic||'audiencia', allCorrect);
+  if(allCorrect){ state.score+=20; soundCorrect(); } else { soundWrong(); }
+  const stamp = document.getElementById('orderStamp');
+  stamp.textContent = allCorrect?'Ordem correta':'Ordem incorreta';
+  stamp.className='stamp'+(allCorrect?'':' wrong');
+  document.getElementById('orderExplain').textContent = ex.explanation;
+  document.getElementById('orderFeedback').classList.add('show');
+  document.getElementById('orderCheckBtn').style.display='none';
+  document.getElementById('orderNextBtn').style.display='flex';
+});
+document.getElementById('orderNextBtn').addEventListener('click',()=>{
+  soundClick();
+  orderIndex++;
+  if(orderIndex>=orderQueue.length){ finishGame(); return; }
+  loadOrderExercise();
+});
+
+/* =========================================================
+   10. FINALIZAÇÃO / RESULTADOS
+   ========================================================= */
+function computeAchievements(){
+  const achv=[];
+  const total = state.correctCount+state.wrongCount;
+  const pct = total? Math.round((state.correctCount/total)*100) : 0;
+  if(pct===100 && total>=5) achv.push('🏅 Cravou 100%');
+  if(state.bestStreak>=5) achv.push('🔥 Sequência de '+state.bestStreak);
+  if(pct>=80) achv.push('⚖️ Nota máxima de excelência');
+  if(state.mode==='survival' && state.livesLeft>0) achv.push('🛡️ Sobreviveu ao banco inteiro');
+  if(state.mode==='blitz' && state.correctCount>=8) achv.push('⚡ Relâmpago certeiro');
+  if(total>=10 && state.wrongCount===0) achv.push('📜 Sem nenhuma nulidade (0 erros)');
+  return achv;
+}
+
+function finishGame(){
+  stopTimer();
+  const elapsed = Math.round((Date.now()-state.startTime)/1000);
+  document.getElementById('finalScore').textContent = state.score;
+
+  const total = state.correctCount+state.wrongCount;
+  const pct = total? Math.round((state.correctCount/total)*100) : 0;
+  const grid = document.getElementById('resultsGrid');
+  grid.innerHTML = `
+    <div class="rstat"><div class="v">${pct}%</div><div class="l">Acertos</div></div>
+    <div class="rstat"><div class="v">${total}</div><div class="l">Questões</div></div>
+    <div class="rstat"><div class="v">${elapsed}s</div><div class="l">Tempo</div></div>
+    <div class="rstat"><div class="v">${state.bestStreak}</div><div class="l">Melhor sequência</div></div>
+  `;
+
+  const achvRow = document.getElementById('achvRow');
+  achvRow.innerHTML='';
+  computeAchievements().forEach(a=>{
+    const span=document.createElement('span'); span.className='achv'; span.textContent=a; achvRow.appendChild(span);
+  });
+
+  drawTopicChart('statsCanvas', state.byTopic);
+  renderRecommendations(state.byTopic,'recList');
+
+  showScreen('results');
+}
+
+function renderRecommendations(byTopic,elId){
+  const list = document.getElementById(elId);
+  list.innerHTML='';
+  const entries = Object.entries(byTopic).map(([topic,d])=>{
+    const t=d.hit+d.miss; return {topic, rate: t?d.hit/t:1, total:t};
+  }).filter(e=>e.total>0).sort((a,b)=>a.rate-b.rate);
+  if(entries.length===0){ list.innerHTML='<li>Responda mais questões para gerar recomendações personalizadas.</li>'; return; }
+  const weak = entries.filter(e=>e.rate<0.7).slice(0,3);
+  const strong = entries.filter(e=>e.rate>=0.85).slice(0,3);
+  if(weak.length){
+    weak.forEach(e=>{
+      const li=document.createElement('li');
+      li.textContent = `Revisar ${TOPICS[e.topic]||e.topic} — ${Math.round(e.rate*100)}% de acerto até agora.`;
+      list.appendChild(li);
+    });
+  } else {
+    const li=document.createElement('li'); li.textContent='Nenhum tema crítico identificado — bom domínio geral!'; list.appendChild(li);
+  }
+  if(strong.length){
+    const li=document.createElement('li');
+    li.textContent = `Temas dominados: ${strong.map(e=>TOPICS[e.topic]||e.topic).join(', ')}.`;
+    list.appendChild(li);
+  }
+}
+
+function drawTopicChart(canvasId, byTopic){
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const entries = Object.entries(byTopic);
+  if(entries.length===0){
+    ctx.fillStyle='#5c5847'; ctx.font='13px IBM Plex Sans'; ctx.fillText('Sem dados suficientes ainda.',20,30);
+    return;
+  }
+  const padding=40, barH=28, gap=16;
+  const maxW = canvas.width - 260;
+  entries.forEach(([topic,d],i)=>{
+    const y = padding + i*(barH+gap);
+    const total = d.hit+d.miss;
+    const rate = total? d.hit/total : 0;
+    ctx.fillStyle='#5c5847'; ctx.font='12px IBM Plex Sans';
+    ctx.fillText((TOPICS[topic]||topic), 0, y+barH*0.65);
+    ctx.fillStyle='#ece5d1'; ctx.fillRect(190,y,maxW,barH);
+    ctx.fillStyle = rate>=0.7? '#3e7c59' : (rate>=0.4? '#c9a227' : '#b23a48');
+    ctx.fillRect(190,y,maxW*rate,barH);
+    ctx.fillStyle='#1b2333'; ctx.font='12px IBM Plex Mono';
+    ctx.fillText(Math.round(rate*100)+'% ('+d.hit+'/'+total+')', 190+maxW+10, y+barH*0.65);
+  });
+}
+
+/* =========================================================
+   11. RANKING LOCAL (localStorage)
+   ========================================================= */
+document.getElementById('saveRankBtn').addEventListener('click',()=>{
+  const nameInput = document.getElementById('playerName');
+  const name = (nameInput.value||'Anônimo').trim().slice(0,24) || 'Anônimo';
+  try{
+    const rank = JSON.parse(localStorage.getItem('ppq_ranking')||'[]');
+    rank.push({name, score:state.score, mode:labelForMode(state.mode)||state.mode, date:new Date().toLocaleDateString('pt-BR')});
+    rank.sort((a,b)=>b.score-a.score);
+    localStorage.setItem('ppq_ranking', JSON.stringify(rank.slice(0,50)));
+    nameInput.value='';
+    nameInput.placeholder='Salvo! Confira no ranking.';
+    soundCorrect();
+  }catch(e){}
+});
+
+function renderRanking(){
+  showScreen('ranking');
+  const list = document.getElementById('rankList');
+  list.innerHTML='';
+  let rank=[];
+  try{ rank = JSON.parse(localStorage.getItem('ppq_ranking')||'[]'); }catch(e){}
+  if(rank.length===0){ list.innerHTML='<li class="empty-note">Nenhuma pontuação salva ainda. Jogue uma partida e salve seu nome!</li>'; return; }
+  rank.slice(0,20).forEach((r,i)=>{
+    const li=document.createElement('li'); li.className='rank-item';
+    li.innerHTML = `<span class="pos">${i+1}º</span><span class="who"><span class="n">${escapeHtml(r.name)}</span><span class="m">${r.mode} · ${r.date}</span></span><span class="sc">${r.score} pts</span>`;
+    list.appendChild(li);
+  });
+}
+function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+/* =========================================================
+   12. ESTATÍSTICAS GLOBAIS (histórico entre sessões)
+   ========================================================= */
+function renderGlobalStats(){
+  showScreen('stats');
+  let g={};
+  try{ g = JSON.parse(localStorage.getItem('ppq_global_topics')||'{}'); }catch(e){}
+  const totalHit = Object.values(g).reduce((a,d)=>a+d.hit,0);
+  const totalMiss = Object.values(g).reduce((a,d)=>a+d.miss,0);
+  const total = totalHit+totalMiss;
+  const pct = total? Math.round((totalHit/total)*100) : 0;
+  const grid = document.getElementById('globalStatsGrid');
+  grid.innerHTML = `
+    <div class="rstat"><div class="v">${pct}%</div><div class="l">Acerto histórico</div></div>
+    <div class="rstat"><div class="v">${total}</div><div class="l">Questões respondidas</div></div>
+    <div class="rstat"><div class="v">${Object.keys(g).length}</div><div class="l">Temas praticados</div></div>
+  `;
+  drawTopicChart('globalStatsCanvas', g);
+}
+
+/* =========================================================
+   13. NAV: RESULTADOS → AÇÕES
+   ========================================================= */
+document.getElementById('playAgainBtn').addEventListener('click',()=>{
+  soundClick();
+  if(state.mode==='order') startOrderMode(); else startMode(state.mode);
+});
+document.getElementById('backHomeBtn').addEventListener('click',()=>{ soundClick(); showScreen('home'); });
+</script>
+</body>
+</html>
